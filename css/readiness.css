@@ -1,0 +1,320 @@
+/* ═══════════════════════════════════════════════════════════
+   CryptoJournal — Go-live readiness page (rd-)
+   Builds on the shared kit in styles.css (card, checklist/ck,
+   gauge-wrap, result-tile, stat-row, meter, seg, chip, banner).
+   Tokens only; status colours (pass / partly / not yet) reuse the
+   same tokens as the shared checklist so the CVD palette applies.
+   ═══════════════════════════════════════════════════════════ */
+
+/* Icons from the sprite carry no size attributes — give them a default that any rule below overrides */
+:where(.rd) :where(svg:not([width])) { width: 14px; height: 14px; flex-shrink: 0; }
+
+.rd-g { align-items: start; }
+.rd-empty { font-size: 12.5px; line-height: 1.5; padding: 4px 0; }
+.rd-note { font-size: 11.5px; color: var(--t3); line-height: 1.5; margin-top: 10px; }
+.rd-link { display: inline-block; margin-top: 10px; font-size: 12.5px; }
+.rd-print-head { display: none; }
+
+/* ─── Hero: verdict ────────────────────────────────────── */
+.rd-v-keep { --rd-v: var(--amber); }
+.rd-v-close { --rd-v: var(--violet-l); }
+.rd-v-ready { --rd-v: var(--up); }
+.rd-hero {
+  overflow: hidden; padding: 22px 24px;
+  background: var(--gloss-soft), var(--grad-soft);
+  border-color: color-mix(in oklab, var(--rd-v) 34%, transparent);
+}
+.rd-hero::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--rd-v); }
+.rd-hero::after {
+  content: ""; position: absolute; top: -70px; left: -50px; width: 260px; height: 260px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, color-mix(in oklab, var(--rd-v) 20%, transparent), transparent 70%);
+}
+.rd-hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 18px 26px; align-items: start; }
+.rd-ring-col { display: flex; flex-direction: column; align-items: center; gap: 9px; padding-top: 2px; }
+.rd-ring { filter: drop-shadow(0 8px 22px rgba(3, 7, 20, .45)); }
+.rd-ring .gv b { font-size: 34px; line-height: 1; }
+.rd-ring .gv span { max-width: 84px; margin-top: 4px; line-height: 1.25; }
+.rd-gates {
+  font-size: 12px; font-weight: 700; color: var(--t2); padding: 4px 11px; border-radius: 100px;
+  background: var(--glass2); border: 1px solid var(--stroke);
+}
+.rd-gates b { font-family: var(--mono); color: var(--t1); }
+.rd-gates.all { color: var(--up); background: var(--up-bg); border-color: var(--up-br); }
+.rd-gates.all b { color: var(--up); }
+.rd-ring-note { font-size: 11px; color: var(--t3); font-weight: 600; }
+.rd-hero-main { min-width: 0; }
+.rd-eyebrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 9px; }
+.rd-paper { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-br); text-transform: uppercase; letter-spacing: .8px; }
+.rd-verdict { font-family: var(--disp); font-size: 25px; font-weight: 800; letter-spacing: -.5px; line-height: 1.2; color: var(--t1); }
+.rd-expl { font-size: 13.5px; color: var(--t2); line-height: 1.6; margin-top: 8px; max-width: 780px; }
+.rd-next {
+  display: flex; gap: 12px; margin-top: 14px; padding: 12px 14px; max-width: 780px; border-radius: var(--r-sm);
+  background: color-mix(in oklab, var(--rd-v) 9%, transparent); border: 1px solid color-mix(in oklab, var(--rd-v) 30%, transparent);
+}
+.rd-next-ic {
+  width: 32px; height: 32px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  background: color-mix(in oklab, var(--rd-v) 18%, transparent); color: var(--rd-v);
+}
+.rd-next-ic svg { width: 16px; height: 16px; }
+.rd-next-b { min-width: 0; }
+.rd-next-l { font-size: 10.5px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--rd-v); }
+.rd-next-t { font-weight: 700; font-size: 14px; margin-top: 2px; color: var(--t1); }
+.rd-next-h { font-size: 12.5px; color: var(--t2); margin-top: 3px; line-height: 1.5; }
+.rd-next-go { margin-top: 9px; }
+.rd-next-go svg { width: 12px; height: 12px; }
+.rd-strip { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 14px; font-size: 12px; color: var(--t3); font-weight: 500; }
+.rd-strip b { font-family: var(--mono); color: var(--t1); font-weight: 700; }
+.rd-caveat { display: flex; gap: 7px; align-items: flex-start; margin-top: 12px; font-size: 11.5px; color: var(--t3); line-height: 1.45; }
+.rd-caveat svg { width: 13px; height: 13px; margin-top: 1px; }
+.rd-hero-acts { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+@container (max-width: 720px) {
+  .rd-hero-grid { grid-template-columns: auto minmax(0, 1fr); }
+  .rd-hero-acts { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: flex-start; }
+}
+@media (max-width: 560px) { .rd-hero { padding: 18px 16px; } }
+@container (max-width: 520px) {
+  .rd-hero-grid { grid-template-columns: minmax(0, 1fr); }
+  .rd-ring-col { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+  .rd-verdict { font-size: 21px; }
+}
+
+/* Mode note above the hero */
+.rd-mode { margin-bottom: 14px; }
+
+/* ─── Gates & checks: expandable checklist rows ────────── */
+.rd-x > summary { list-style: none; cursor: pointer; }
+.rd-x > summary::-webkit-details-marker { display: none; }
+.rd-x > summary.ck { align-items: center; transition: border-color var(--dur-1), background var(--dur-1); }
+.rd-x > summary.ck:hover { border-color: var(--stroke2); background: rgba(255, 255, 255, .035); }
+.rd-ckb { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.rd-ckb .ct { line-height: 1.35; }
+.rd-ckb .rd-hint { color: var(--t3); margin-top: 3px; }
+.rd-ckb .rd-gnote { margin-top: 3px; }
+.rd-x .cv, .rd-conds .cv, #rd-size .cv {
+  white-space: normal; max-width: 46%; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px 0;
+}
+.rd-chev { width: 14px; height: 14px; color: var(--t3); transition: transform var(--dur-2) var(--ease-out); }
+.rd-x[open] .rd-chev { transform: rotate(180deg); }
+.rd-x[open] > summary.ck { border-color: var(--stroke2); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.rd-how {
+  padding: 10px 14px 12px 44px; border: 1px solid var(--stroke2); border-top: none; border-radius: 0 0 10px 10px;
+  background: color-mix(in oklab, var(--bg) 45%, transparent);
+}
+.rd-how p { font-size: 12.5px; color: var(--t2); line-height: 1.55; margin-bottom: 7px; }
+.rd-how p:last-child { margin-bottom: 0; }
+.rd-how p b { color: var(--t1); }
+.rd-how .rd-link { margin-top: 2px; }
+.rd-extra { display: flex; gap: 7px; align-items: flex-start; color: var(--t1) !important; font-weight: 600; }
+.rd-extra svg { width: 13px; height: 13px; margin-top: 3px; color: var(--violet-l); }
+.rd-btns { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 9px; }
+
+/* Win-rate interval bar (inside the "Win rate vs. breakeven" check) */
+.rd-wb { margin: 6px 0 12px; max-width: 460px; }
+.rd-wb-track { position: relative; height: 10px; margin: 6px 6px 0; border-radius: 5px; background: var(--glass2); }
+.rd-wb-band { position: absolute; top: 0; bottom: 0; border-radius: 5px; background: color-mix(in oklab, var(--violet-l) 38%, transparent); }
+.rd-wb-be { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--amber); }
+.rd-wb-dot { position: absolute; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--t1); box-shadow: 0 0 0 2px var(--chart-surface); }
+.rd-wb-axis { display: flex; justify-content: space-between; margin-top: 5px; font-family: var(--mono); font-size: 10.5px; color: var(--t3); }
+.rd-wb-leg { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 6px; font-size: 11.5px; color: var(--t2); }
+.rd-wb-leg span { display: inline-flex; align-items: center; }
+.rd-wb-k { display: inline-block; margin-right: 6px; }
+.rd-wb-k.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--t1); }
+.rd-wb-k.be { width: 2px; height: 11px; margin: 0 8px 0 3px; border-radius: 1px; background: var(--amber); }
+.rd-how p.rd-wb-read { margin: 6px 0 0; font-size: 12px; color: var(--t2); }
+
+/* State word — the text cue that goes with the icon and colour */
+.rd-st {
+  display: inline-flex; align-items: center; margin-left: 8px; padding: 1px 7px; border-radius: 100px; white-space: nowrap;
+  font-family: var(--sans); font-size: 10px; font-weight: 800; letter-spacing: .4px; text-transform: uppercase;
+  background: var(--flat-bg); color: var(--t2);
+}
+.rd-st.pass { background: var(--up-bg); color: var(--up); }
+.rd-st.partial { background: var(--amber-bg); color: var(--amber); }
+.rd-st.fail { background: var(--down-bg); color: var(--down); }
+.rd-st.wait { background: var(--flat-bg); color: var(--t2); }
+/* Below the contract minimum the state is real but the number is noise — quieten the chip too */
+.rd-st.rd-early { opacity: .6; }
+/* "Waiting" rows: not enough data to judge yet — neutral, dashed box, clock icon */
+.rd .ck.wait .cb { border-style: dashed; border-color: var(--flat-br); background: var(--flat-bg); color: var(--t2); }
+
+@container (max-width: 440px) {
+  .rd-x > summary.ck, .rd-conds .ck, #rd-size .ck { flex-wrap: wrap; }
+  .rd-x .cv, .rd-conds .cv, #rd-size .cv { order: 3; width: 100%; max-width: none; margin-left: 0; padding-left: 33px; justify-content: flex-start; text-align: left; }
+  .rd-x .rd-chev { order: 2; }
+  .rd-how { padding-left: 14px; }
+}
+
+/* ─── Per-setup sample table ───────────────────────────── */
+.rd-tbl td { padding: 9px 12px; }
+.rd-tbl tr.rd-thin td { opacity: .55; }
+.rd-sname { text-align: left; white-space: normal; max-width: 220px; }
+.rd-mini { display: inline-block; width: 52px; height: 6px; border-radius: 3px; background: var(--glass2); vertical-align: middle; margin-right: 8px; overflow: hidden; }
+.rd-mini i { display: block; height: 100%; border-radius: 3px; background: var(--violet-l); }
+.rd-mini.full i { background: var(--up); }
+.rd-tbl .badge svg { width: 10px; height: 10px; }
+/* Phone width: drop the mini bar and tighten cells so the 4 columns fit without a sideways scroll */
+@container (max-width: 420px) {
+  .rd-tbl .rd-mini { display: none; }
+  .rd-tbl td, .rd-tbl thead th { padding-left: 7px; padding-right: 7px; }
+  .rd-tbl td:nth-child(2) { white-space: normal; }
+  .rd-tbl thead th { white-space: normal; letter-spacing: .3px; }
+}
+
+/* ─── Live-costs haircut ───────────────────────────────── */
+#rd-costs .result-tiles { margin-bottom: 6px; }
+.rd-muted { color: var(--t3); }
+.rd-glyph { font-size: .62em; margin-right: 6px; vertical-align: .18em; }
+.rd-gnote { font-weight: 700; color: var(--t3); }
+.rd-rows .stat-row { min-height: 38px; }
+.rd-rows .stat-row .sl { flex-wrap: wrap; }
+/* The shared .sv is nowrap; a value + its reading ("includes 0R — consistent with no edge") is wider
+   than a phone-width or half-width desktop card. Let the value drop under its label and wrap instead. */
+@container (max-width: 520px) {
+  .rd-rows .stat-row { flex-wrap: wrap; row-gap: 2px; }
+  .rd-rows .stat-row .sv, .rd-rows .stat-row .sv small { white-space: normal; }
+}
+.rd-assume { display: flex; gap: 8px; align-items: flex-start; margin-top: 12px; padding-top: 11px; border-top: 1px solid var(--stroke); font-size: 12px; color: var(--t3); line-height: 1.55; }
+.rd-assume svg { margin-top: 2px; }
+.rd-assume b { color: var(--t2); font-family: var(--mono); }
+.rd-warn { display: flex; gap: 10px; margin-top: 12px; padding: 10px 12px; border-radius: var(--r-sm); background: var(--amber-bg); border: 1px solid var(--amber-br); font-size: 12.5px; color: var(--t1); line-height: 1.5; }
+.rd-warn svg { width: 16px; height: 16px; color: var(--amber); margin-top: 1px; }
+.rd-need { margin-top: 14px; padding: 13px 14px; border-radius: var(--r-sm); background: var(--glass); border: 1px solid var(--stroke); }
+.rd-sub-h { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--violet-l); margin-bottom: 6px; }
+.rd-need p { font-size: 13px; color: var(--t2); line-height: 1.55; }
+.rd-need p b { color: var(--t1); font-family: var(--mono); }
+.rd-need .meter { margin-top: 10px; }
+.rd-dimnote { font-size: 11.5px !important; color: var(--t3) !important; margin-top: 7px; }
+
+/* ─── Drawdown at live risk ────────────────────────────── */
+.rd-mc-ctl { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-end; margin-bottom: 14px; }
+.rd-mc-ctl .field { width: 150px; }
+.rd-mc-ctl .chip-row { padding-bottom: 2px; }
+.rd-mc-ctl .chip[disabled] { opacity: .45; cursor: not-allowed; }
+.rd-mc-head { display: flex; gap: 14px; align-items: center; margin-bottom: 8px; font-size: 13px; color: var(--t2); line-height: 1.45; }
+.rd-mc-head b { color: var(--t1); }
+.rd-mc-head .dim { font-size: 12px; margin-top: 3px; }
+.rd-big { font-family: var(--mono); font-size: 30px; font-weight: 700; letter-spacing: -.8px; line-height: 1; color: var(--t1); flex-shrink: 0; font-variant-numeric: tabular-nums slashed-zero; }
+.chart-box.rd-fan { height: 170px; margin-top: 12px; }
+.rd-sw { display: inline-block; width: 14px; height: 8px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+.rd-sw.band { background: color-mix(in oklab, var(--violet-l) 24%, transparent); }
+.rd-sw.line { height: 2px; background: var(--violet-l); }
+.rd-gated { display: flex; gap: 12px; padding: 14px; border-radius: var(--r-sm); background: var(--glass); border: 1px dashed var(--stroke2); font-size: 12.5px; color: var(--t2); line-height: 1.55; }
+.rd-gated svg { width: 18px; height: 18px; color: var(--t3); margin-top: 1px; }
+.rd-gated b { color: var(--t1); }
+
+/* ─── Ramp plan ────────────────────────────────────────── */
+/* Scroll targets get tabindex=-1 so focus can follow a jump; no ring for that programmatic focus */
+.rd [tabindex="-1"]:focus, .rd [tabindex="-1"]:focus-visible { outline: none; }
+.rd-stages { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
+.rd-stage {
+  position: relative; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center;
+  padding: 10px 4px 9px; border-radius: var(--r-sm); background: var(--glass); border: 1px solid var(--stroke);
+}
+.rd-stage:not(:last-child)::after { content: ""; position: absolute; top: 22px; right: -9px; width: 10px; height: 2px; border-radius: 1px; background: var(--stroke2); }
+.rd-stage.done:not(:last-child)::after { background: var(--up-br); }
+.rd-stage b { font-family: var(--mono); font-size: 15px; color: var(--t1); }
+.rd-stage small { font-size: 10.5px; color: var(--t3); line-height: 1.3; }
+.rd-sn {
+  width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 11.5px; font-weight: 800; background: var(--glass2); color: var(--t2); border: 1px solid var(--stroke2);
+}
+.rd-sn svg { width: 12px; height: 12px; }
+.rd-stage.done .rd-sn { background: var(--up-bg); color: var(--up); border-color: var(--up-br); }
+.rd-stage.cur { background: var(--gloss-soft), var(--grad-soft); border-color: color-mix(in oklab, var(--violet-l) 45%, transparent); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08); }
+.rd-stage.cur .rd-sn { background: var(--grad); color: #fff; border-color: transparent; box-shadow: 0 4px 12px color-mix(in oklab, var(--violet) 45%, transparent); }
+@container (max-width: 380px) { .rd-stage b { font-size: 13px; } .rd-stage small { font-size: 9.5px; } }
+.rd-rules { list-style: none; display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+.rd-rules li { display: flex; gap: 9px; font-size: 12.5px; color: var(--t2); line-height: 1.5; }
+.rd-rules li svg { width: 15px; height: 15px; margin-top: 2px; color: var(--violet-l); }
+.rd-rules b { color: var(--t1); }
+.rd-live { border-top: 1px solid var(--stroke); padding-top: 14px; }
+.rd-live .meter { margin-bottom: 12px; }
+.rd-act { display: flex; gap: 11px; padding: 11px 13px; margin: 12px 0; border-radius: var(--r-sm); border: 1px solid var(--stroke); background: var(--glass); }
+.rd-act-ic { width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--glass2); color: var(--violet-l); }
+.rd-act-ic svg { width: 15px; height: 15px; }
+.rd-act.ok { border-color: var(--up-br); background: var(--up-bg); } .rd-act.ok .rd-act-ic { color: var(--up); }
+.rd-act.warn { border-color: var(--amber-br); background: var(--amber-bg); } .rd-act.warn .rd-act-ic { color: var(--amber); }
+.rd-act.stop { border-color: var(--down-br); background: var(--down-bg); } .rd-act.stop .rd-act-ic { color: var(--down); }
+.rd-act-l { font-size: 10.5px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--t3); }
+.rd-act-t { font-weight: 700; font-size: 13.5px; margin-top: 1px; color: var(--t1); }
+.rd-act-x { font-size: 12.5px; color: var(--t2); margin-top: 2px; line-height: 1.5; }
+.rd-ramp-acts { margin-top: 4px; }
+.rd-ramp-empty { display: flex; gap: 10px; padding: 12px 13px; border-radius: var(--r-sm); border: 1px dashed var(--stroke2); background: var(--glass); font-size: 12.5px; color: var(--t2); line-height: 1.55; }
+.rd-ramp-empty svg { width: 16px; height: 16px; color: var(--violet-l); margin-top: 2px; }
+.rd-ramp-empty + .rd-ramp-acts { margin-top: 10px; }
+.rd-toggle { margin-top: 16px; font-weight: 700; color: var(--t1); }
+.rd-toggle + .rd-note { margin-top: 6px; }
+
+/* ─── Paper vs live ────────────────────────────────────── */
+.rd-tr { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; font-size: 13px; }
+.rd-tr b { display: inline-flex; align-items: center; gap: 6px; }
+.rd-tr .badge { margin-top: 5px; }
+.rd-cmp tbody th { text-align: left; font-weight: 600; color: var(--t2); padding: 9px 12px 9px 2px; border-bottom: 1px solid rgba(255, 255, 255, .045); white-space: nowrap; }
+.rd-cmp tbody td { padding: 9px 12px; }
+.rd-cmp thead th:first-child { padding-left: 2px; }
+.rd-cmp thead th { background: transparent; backdrop-filter: none; position: static; }
+/* Phone width: "Rule adherence (all trades)" is nowrap and pushes the 3 columns past a 360px card — let it wrap */
+@container (max-width: 420px) {
+  .rd-cmp tbody th { white-space: normal; padding-right: 8px; }
+  .rd-cmp tbody td, .rd-cmp thead th { padding-left: 6px; padding-right: 6px; }
+}
+.rd-welch { font-size: 12.5px; color: var(--t2); line-height: 1.55; margin-top: 12px; }
+.rd-dimv { opacity: .55; }
+
+/* ─── Self-check ───────────────────────────────────────── */
+.rd-self-list { display: flex; flex-direction: column; gap: 6px; }
+.rd-q { display: flex; align-items: center; gap: 12px; padding: 9px 11px; border-radius: 10px; border: 1px solid var(--stroke); background: rgba(255, 255, 255, .02); transition: border-color var(--dur-2); }
+.rd-q.yes { border-color: var(--up-br); }
+.rd-q.no { border-color: var(--amber-br); }
+.rd-qt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.rd-qs { font-size: 13px; font-weight: 600; line-height: 1.4; color: var(--t1); }
+.rd-qh { font-size: 11.5px; color: var(--t3); line-height: 1.4; }
+.rd-yn { flex-shrink: 0; }
+.rd-yn button { min-width: 62px; }
+.rd-yn button.on[data-id="yes"] { background: var(--up-bg); color: var(--t1); box-shadow: inset 0 0 0 1px var(--up-br); }
+.rd-yn button.on[data-id="no"] { background: var(--amber-bg); color: var(--t1); box-shadow: inset 0 0 0 1px var(--amber-br); }
+@container (max-width: 460px) { .rd-q { flex-direction: column; align-items: stretch; gap: 8px; } .rd-yn { align-self: flex-start; } }
+.rd-self-msg { color: var(--t2); font-size: 12.5px; }
+.rd-self-foot { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 8px; font-size: 11.5px; color: var(--t3); }
+.rd-sig { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--stroke); }
+.rd-sig .rd-sub-h { margin-bottom: 2px; }
+.rd-sig-sub { margin: 0 0 10px; }
+.rd-sig .cv { white-space: normal; max-width: 46%; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px 0; }
+.rd-sig-act { align-self: flex-start; margin-top: 5px; font-size: 12px; text-align: left; }
+@container (max-width: 440px) {
+  .rd-sig .ck { flex-wrap: wrap; }
+  .rd-sig .cv { order: 3; width: 100%; max-width: none; margin-left: 0; padding-left: 33px; justify-content: flex-start; text-align: left; }
+}
+
+/* ─── Realistic sizing ─────────────────────────────────── */
+.rd-cap-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 14px; }
+.rd-cap-row .field { flex: 1 1 190px; max-width: 280px; }
+
+/* ─── History ──────────────────────────────────────────── */
+.rd-hist-card { margin-top: 16px; }
+.chart-box.rd-hist { height: 150px; }
+.rd-hist-legend { margin-top: 10px; }
+.rd-ln-a { background: var(--violet-l); }
+.rd-ln-b { color: var(--lilac); }
+
+/* ─── Print (share with a mentor) ──────────────────────── */
+@media print {
+  .rd-print-head { display: block; font-size: 15px; font-weight: 700; color: #111; margin-bottom: 12px; }
+  .rd, .rd .card { color: #111; }
+  .rd-hero, .rd-next, .rd-how, .rd-need, .rd-gated, .rd-act, .rd-q, .rd-stage, .rd-warn, .rd-ramp-empty, .rd .ck, .rd .result-tile {
+    background: #fff !important; border-color: #ccc !important; box-shadow: none !important;
+  }
+  .rd-hero::before, .rd-hero::after, .rd-chev, .rd-stage::after { display: none !important; }
+  .rd-verdict, .rd-next-t, .rd .ck .ct, .rd .ck .cv, .rd-qs, .rd-act-t, .rd-big, .rd-stage b, .rd .card-title, .rd .section-h,
+  .rd .stat-row .sv, .rd .result-tile .rv, .rd-strip b, .rd-need p b, .rd-gates b { color: #111 !important; }
+  .rd-expl, .rd-how p, .rd-next-h, .rd-qh, .rd-note, .rd-strip, .rd-assume, .rd-welch, .rd .ck .cs, .rd-act-x, .rd-rules li, .rd-need p, .rd .card-sub { color: #333 !important; }
+  .rd .g2 { gap: 12px; }
+  .rd .card, .rd .rd-x { break-inside: avoid; }
+  .rd-yn button:not(.on) { display: none; }
+  .rd-yn button.on { background: #fff !important; color: #111 !important; box-shadow: inset 0 0 0 1px #999 !important; }
+  .rd-ring { filter: none; }
+  /* bars carry meaning through their fill — keep the colours on paper */
+  .rd-wb, .rd-mini, .rd .progress-track, .rd .rd-st { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .rd-wb-track { background: #ddd !important; }
+  .rd-wb-dot, .rd-wb-k.dot { background: #111 !important; box-shadow: 0 0 0 2px #fff !important; }
+}

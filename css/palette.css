@@ -1,0 +1,146 @@
+/* ═══════════════════════════════════════════════════════════
+   CryptoJournal — command palette (.pl-), G-chord hint and the
+   keyboard-shortcut sheet. The overlay sits above modals (50) and
+   drawers (45) but under toasts (90) and info popovers (95).
+   Tokens only; the selected row gets background + inset border
+   (and a system highlight in forced-colours mode), not colour alone.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Overlay & dialog ───────────────────────────────────── */
+.pl-backdrop {
+  position: fixed; inset: 0; z-index: 80;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: min(12vh, 120px) 16px 16px;
+  background: color-mix(in oklab, var(--bg) 72%, transparent); backdrop-filter: blur(6px);
+  animation: fadeIn var(--dur-2) ease;
+}
+/* the class sets display, so the hidden attribute needs restating */
+.pl-backdrop[hidden], .pl-crumb[hidden] { display: none; }
+.pl-dialog {
+  width: 100%; max-width: 640px; max-height: min(72dvh, 620px);
+  display: flex; flex-direction: column; overflow: hidden;
+  background: var(--gloss-soft), linear-gradient(180deg, var(--bg2), var(--bg1));
+  border: 1px solid var(--stroke2); border-radius: var(--r-lg);
+  box-shadow: 0 40px 100px color-mix(in oklab, var(--bg) 85%, transparent), 0 0 80px color-mix(in oklab, var(--violet-d) 16%, transparent), inset 0 1px 0 var(--glass2);
+  animation: pl-in var(--dur-3) var(--ease-out);
+}
+@keyframes pl-in { from { opacity: 0; transform: translateY(-8px) scale(.985); } to { opacity: 1; transform: none; } }
+
+/* Search row */
+.pl-search { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--stroke); transition: box-shadow var(--dur-1); }
+.pl-search:focus-within { box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--violet) 70%, transparent); }
+.pl-sicon { width: 18px; height: 18px; flex-shrink: 0; color: var(--t3); }
+/* 16px+ keeps mobile Safari from zooming into the field */
+.pl-input { flex: 1; min-width: 0; padding: 4px 0; font-size: 16px; font-weight: 500; color: var(--t1); background: none; }
+.pl-input::placeholder { color: var(--t3); opacity: .9; }
+.pl-esc { flex-shrink: 0; }
+/* close button: only where there is no Esc key hint (phones, touch) — keyboard users have Esc */
+.pl-x {
+  display: none; align-items: center; justify-content: center; flex-shrink: 0; width: 36px; height: 36px; margin: -6px -6px -6px 0;
+  border-radius: 50%; color: var(--t2); cursor: pointer; transition: background var(--dur-1), color var(--dur-1);
+}
+.pl-x:hover { background: var(--glass2); color: var(--t1); }
+.pl-x svg { width: 16px; height: 16px; }
+
+/* Breadcrumb while inside a sub-list ("Close a position") */
+.pl-crumb {
+  display: inline-flex; align-items: center; gap: 4px; max-width: 45%; flex-shrink: 0;
+  padding: 3px 4px 3px 10px; border-radius: 100px; font-size: 12px; font-weight: 700; color: var(--t1); white-space: nowrap;
+  background: var(--grad-soft); border: 1px solid color-mix(in oklab, var(--violet) 40%, transparent);
+}
+.pl-crumb > span { overflow: hidden; text-overflow: ellipsis; }
+.pl-crumb-x { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; color: var(--t2); cursor: pointer; flex-shrink: 0; }
+.pl-crumb-x:hover { background: var(--glass2); color: var(--t1); }
+.pl-crumb-x svg { width: 10px; height: 10px; }
+
+/* ── Results ────────────────────────────────────────────── */
+.pl-list { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 4px 8px 8px; scrollbar-width: thin; scrollbar-color: var(--t4) transparent; }
+.pl-group + .pl-group { margin-top: 2px; }
+.pl-gh { padding: 10px 10px 5px; font-size: 10.5px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--t3); }
+.pl-item {
+  display: flex; align-items: center; gap: 11px; min-height: 44px; padding: 7px 10px; border-radius: 11px;
+  color: var(--t2); cursor: pointer; transition: background var(--dur-1);
+}
+.pl-item.on { background: var(--gloss-soft), var(--grad-soft); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--violet) 38%, transparent); color: var(--t1); }
+.pl-ic {
+  width: 30px; height: 30px; border-radius: var(--r-xs); flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  color: var(--t2); background: var(--glass); border: 1px solid var(--stroke);
+}
+.pl-ic svg { width: 16px; height: 16px; }
+.pl-item.on .pl-ic { color: var(--violet-l); border-color: color-mix(in oklab, var(--violet) 38%, transparent); }
+.pl-ic.pl-coin { background: none; border: none; }
+.pl-ic.pl-coin .coin-ic { width: 28px; height: 28px; }
+.pl-tx { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.pl-lb { font-size: 13.5px; font-weight: 600; color: var(--t1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pl-sb { font-size: 11.5px; color: var(--t3); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pl-item.on .pl-sb { color: var(--t2); }
+.pl-meta { flex-shrink: 0; display: flex; align-items: center; }
+.pl-res { font-family: var(--mono); font-size: 12px; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums slashed-zero; }
+.pl-keys { flex-shrink: 0; display: flex; align-items: center; gap: 3px; }
+.pl-then { padding: 0 4px; font-size: 10.5px; font-weight: 600; color: var(--t3); }
+.pl-or { padding: 0 2px; font-size: 10.5px; color: var(--t3); }
+.pl-more { display: flex; flex-shrink: 0; color: var(--t3); }
+.pl-more svg { width: 14px; height: 14px; }
+.pl-item.on .pl-more { color: var(--t1); }
+/* matched letters: escaped text, wrapped per character */
+.pl-item mark {
+  background: none; color: var(--violet-l); font-weight: 700;
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px;
+  text-decoration-color: color-mix(in oklab, var(--violet-l) 55%, transparent);
+}
+.pl-sb mark { font-weight: 600; }
+
+.pl-empty { padding: 34px 16px; text-align: center; }
+.pl-empty .big { font-size: 14px; font-weight: 700; color: var(--t2); margin-bottom: 4px; overflow-wrap: anywhere; }
+.pl-empty .small { font-size: 12.5px; color: var(--t3); line-height: 1.45; max-width: 380px; margin: 0 auto; }
+
+/* Footer key legend */
+.pl-foot {
+  display: flex; align-items: center; gap: 8px 16px; flex-wrap: wrap; padding: 9px 16px;
+  border-top: 1px solid var(--stroke); background: color-mix(in oklab, var(--bg) 35%, transparent);
+  font-size: 11.5px; color: var(--t3);
+}
+.pl-foot > span { display: inline-flex; align-items: center; gap: 5px; }
+
+/* ── G-chord hint ("Go to…") ────────────────────────────── */
+.pl-chord {
+  position: fixed; left: 50%; bottom: 28px; z-index: 85; pointer-events: none;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; max-width: min(680px, calc(100vw - 32px));
+  padding: 10px 14px; border-radius: var(--r-md); font-size: 12px; color: var(--t2);
+  background: var(--gloss-soft), var(--bg2); border: 1px solid var(--stroke2);
+  box-shadow: 0 16px 40px color-mix(in oklab, var(--bg) 80%, transparent);
+  opacity: 0; transform: translate(-50%, 8px); transition: opacity var(--dur-2), transform var(--dur-2) var(--ease-out);
+}
+.pl-chord.on { opacity: 1; transform: translate(-50%, 0); }
+.pl-chord b { color: var(--t1); margin-right: 2px; }
+.pl-chord span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+
+/* ── Keyboard shortcut sheet (Modal) ────────────────────── */
+.pl-sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); gap: 8px 28px; }
+.pl-sheet-g h4 { margin: 4px 0 4px; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--violet-l); }
+.pl-sheet-g .kbd-row:last-child { border-bottom: none; }
+.pl-sheet-g .kbd-row .k { align-items: center; flex-shrink: 0; }
+.pl-sheet-note { margin-top: 14px; font-size: 12px; color: var(--t3); line-height: 1.5; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .pl-chord { bottom: calc(88px + env(safe-area-inset-bottom)); }
+}
+@media (max-width: 640px) {
+  .pl-backdrop { padding: 10px; }
+  .pl-dialog { max-height: calc(100dvh - 20px); border-radius: var(--r-md); }
+  .pl-esc, .pl-foot { display: none; }
+  .pl-x { display: inline-flex; }
+  .pl-sb { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+}
+/* Touch screens: key hints are noise */
+@media (hover: none) and (pointer: coarse) {
+  .pl-keys, .pl-foot, .pl-esc { display: none; }
+  .pl-x { display: inline-flex; }
+}
+@media (forced-colors: active) {
+  .pl-item.on { outline: 2px solid Highlight; outline-offset: -2px; }
+}
+@media print {
+  .pl-backdrop, .pl-chord { display: none !important; }
+}

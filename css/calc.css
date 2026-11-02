@@ -1,0 +1,118 @@
+/* ═══════════════════════════════════════════════════════════
+   CryptoJournal — Position Size page (.cl-) and the trade chart
+   drawer (.cl-tc-, built by market.js). Builds on the shared kit:
+   .calc-layout, .result-tiles/.result-tile, .rr-bar, .guard, .reading.
+   Tokens only — P/L colours come from --up / --down.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Layout ─────────────────────────────────────────────── */
+.cl-root { align-items: start; }
+.cl-out { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.cl-form { min-width: 0; }
+/* In the two-column layout (940–1100px with the sidebar) the form card is only ~270px wide:
+   a fixed 2-column grid squeezed "Risk per trade" to a ~30px box. auto-fit drops to one
+   column whenever two 200px fields don't fit; .full / .form-section still span every column. */
+.cl-form .form-grid { gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+.cl-form .card-sub { margin-top: -6px; }
+/* an input's intrinsic width would push the addon off a 360px screen */
+.cl-form .input-group .input { min-width: 0; flex: 1 1 auto; }
+/* privacy mode: a typed balance is a $ amount too (its placeholder is already hidden); clear while editing */
+.privacy .cl-form [data-k="balance"]:not(:focus) { filter: blur(6px); }
+.cl-coin { text-transform: uppercase; }
+.cl-coin::placeholder { text-transform: none; }
+/* auto-fit: columns wrap on their own from 360px phones up to wide desktops */
+.cl-legs, .cl-perp { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px 14px; align-items: start; }
+.cl-perp { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.cl-span { grid-column: 1 / -1; }
+/* hints that sit outside a .field (fee legs, perp block) get the same look as .field .hint */
+.cl-form .hint { font-size: 11.5px; color: var(--t3); font-weight: 500; line-height: 1.45; }
+.cl-form .hint:empty { display: none; }
+.cl-form .hint.warn { color: var(--amber); }
+.cl-form .hint.err { color: var(--down); }
+.cl-form .hint b { color: inherit; font-weight: 700; }
+.cl-legs .field, .cl-perp .field { gap: 6px; }
+.cl-legs .seg { margin-bottom: 2px; }
+.cl-form .hint .link-btn { font-size: inherit; }
+
+/* ── Live price chip (fills the entry) ──────────────────── */
+.cl-live { min-height: 22px; display: flex; align-items: center; font-size: 11.5px; }
+.cl-live-btn {
+  display: inline-flex; align-items: center; gap: 7px; flex-wrap: wrap; max-width: 100%;
+  padding: 4px 10px; border-radius: 100px; cursor: pointer; text-align: left;
+  font-size: 11.5px; font-weight: 700; color: var(--cyan);
+  background: color-mix(in oklab, var(--cyan) 9%, transparent); border: 1px solid color-mix(in oklab, var(--cyan) 30%, transparent);
+  transition: border-color var(--dur-1), background var(--dur-1);
+}
+.cl-live-btn:hover { border-color: var(--cyan); }
+.cl-live-btn .pulse { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 1.6s infinite; flex-shrink: 0; }
+.cl-live-btn .mono { color: var(--t1); }
+.cl-live-meta { color: var(--t2); font-weight: 600; }
+.cl-live-use { color: var(--violet-l); text-decoration: underline; text-underline-offset: 2px; }
+.cl-live-btn.stale { color: var(--amber); background: var(--amber-bg); border-color: var(--amber-br); }
+.cl-live-btn.stale .pulse { animation: none; }
+
+/* ── Result tiles ───────────────────────────────────────── */
+.cl-tiles .result-tile { display: flex; flex-direction: column; }
+.cl-tiles .result-tile .rl { line-height: 1.3; }
+.cl-tiles .result-tile .rl .info-tip { margin-left: auto; }
+.cl-tiles .result-tile .rv { overflow-wrap: anywhere; line-height: 1.15; }
+.cl-tiles .result-tile .rv small { font-size: 13px; font-weight: 600; color: var(--t2); letter-spacing: 0; margin-left: 6px; }
+.cl-tiles .result-tile .rs b { color: var(--t1); }
+.cl-tiles .result-tile.alert .rs, .cl-tiles .result-tile.warnt .rs { color: var(--t2); }
+.cl-tiles .result-tile.alert .rl { color: var(--down); }
+.cl-tiles .result-tile.warnt .rl { color: var(--amber); }
+.cl-wide { grid-column: 1 / -1; }
+.cl-rr-empty .rr-bar > div { opacity: .28; }
+
+/* ── Summary, checks, actions ───────────────────────────── */
+.cl-summary { font-size: 13px; line-height: 1.6; }
+.cl-checks .card-title { margin-bottom: 10px; }
+.cl-checks .guard { align-items: flex-start; }
+.cl-checks .guard .gi { margin-top: 1px; }
+.cl-gt { min-width: 0; }
+.cl-none { font-size: 12.5px; padding: 4px 2px; }
+.cl-open { width: 100%; }
+.cl-foot { font-size: 11.5px; line-height: 1.5; color: var(--t3); }
+
+@media (max-width: 420px) {
+  .cl-tiles { grid-template-columns: 1fr; }
+  .cl-tiles .result-tile .rv { font-size: 20px; }
+  .cl-tiles .result-tile.big .rv { font-size: 26px; }
+}
+
+/* ═══ Trade chart drawer (TradeChart in market.js) ═══════ */
+.cl-tc { display: flex; flex-direction: column; gap: 12px; }
+.cl-tc-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; }
+.cl-tc-px { margin-left: auto; font-family: var(--mono); font-size: 12px; }
+.cl-tc-notes:empty { display: none; }
+.cl-tc-notes { display: flex; flex-direction: column; gap: 8px; }
+.cl-tc-note { margin-bottom: 0; padding: 9px 12px; font-size: 12.5px; }
+.cl-tc-box { border-radius: var(--r-sm); background: color-mix(in oklab, var(--chart-surface) 55%, transparent); border: 1px solid var(--stroke); }
+.cl-tc-state {
+  position: absolute; inset: 0; z-index: 4; display: flex; align-items: center; justify-content: center; gap: 10px;
+  color: var(--t3); font-size: 12.5px; font-weight: 600; pointer-events: none; text-align: center; padding: 12px;
+}
+.cl-tc-state.full { pointer-events: auto; background: var(--chart-surface); border-radius: inherit; }
+.cl-tc-state .empty-state { padding: 16px 12px; }
+.cl-spin {
+  width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid var(--stroke2); border-top-color: var(--violet-l); animation: cl-spin .8s linear infinite;
+}
+@keyframes cl-spin { to { transform: rotate(360deg); } }
+.cl-tc-legend { margin-top: -2px; }
+/* legend swatches use the same mark tokens the canvas draws with */
+.cl-c-down { color: var(--chart-down); }
+.cl-c-up { color: var(--chart-up); }
+.cl-tc-cap { margin-top: -4px; }
+.cl-tc-card .card-title { margin-bottom: 10px; }
+.cl-tc-p { font-size: 12.5px; color: var(--t2); line-height: 1.5; margin-bottom: 8px; }
+.cl-tc-p b { color: var(--t1); font-family: var(--mono); }
+.cl-tc-hl, .cl-tc-r { display: flex; gap: 8px 18px; flex-wrap: wrap; align-items: baseline; font-size: 12.5px; color: var(--t2); margin-bottom: 8px; }
+.cl-tc-hl b, .cl-tc-r b { font-family: var(--mono); font-size: 13.5px; color: var(--t1); margin-left: 4px; }
+.cl-tc-r b.pos, .cl-tc-r b.neg { font-weight: 700; }
+.cl-tc-act { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; margin-top: 4px; }
+.cl-tc-warn { flex: 1; min-width: 220px; font-size: 11.5px; color: var(--t3); line-height: 1.45; }
+@media (max-width: 520px) {
+  .cl-tc-px { margin-left: 0; width: 100%; }
+  .cl-tc .chart-box.lg { height: 280px; }
+}

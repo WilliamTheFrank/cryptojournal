@@ -1,0 +1,200 @@
+/* ═══════════════════════════════════════════════════════════
+   CryptoJournal — cloud sync UI (sync-ui.js, .sy-): the topbar
+   chip, the sign-in / status dialog, Settings → Sync & devices
+   and the "Set a new password" dialog. Builds on the shared kit
+   (.tb-btn, .btn, .field, .input, .input-group, .seg, .card,
+   .banner, .badge) and the Settings cards (.st-grid, .st-card).
+   Tokens only. Green means profit in this app, so "synced" uses
+   the accent; offline / sign-in-again are amber, problems red —
+   and every state also has its own icon and words.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Topbar chip ────────────────────────────────────────── */
+.sy-chip { position: relative; }
+.sy-chip .sy-ic { display: inline-flex; color: var(--t3); }
+.sy-chip .sy-ic svg { width: 15px; height: 15px; }
+.sy-chip:is([data-state="synced"], [data-state="syncing"]) .sy-ic { color: var(--violet-l); }
+.sy-chip[data-state="syncing"] .sy-ic svg { animation: sy-spin 1.1s linear infinite; }
+.sy-chip:is([data-state="offline"], [data-state="auth"]) { color: var(--amber); background: var(--amber-bg); border-color: var(--amber-br); }
+.sy-chip[data-state="error"] { color: var(--down); background: var(--down-bg); border-color: var(--down-br); }
+.sy-chip:is([data-state="offline"], [data-state="auth"], [data-state="error"]) .sy-ic { color: inherit; }
+/* waiting-changes count, shown when the chip is icon-only */
+.sy-n {
+  display: none; position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px; padding: 0 5px;
+  align-items: center; justify-content: center; border-radius: 9px; border: 2px solid var(--bg);
+  background: var(--amber); color: #1b1206; font-size: 10px; font-weight: 800; line-height: 1;
+}
+.sy-chip[data-state="error"] .sy-n { background: var(--down); color: #fff; }
+@keyframes sy-spin { to { transform: rotate(360deg); } }
+/* phones: icon only (aria-label keeps the words) */
+@media (max-width: 860px) {
+  .sy-chip { padding: 8px; }
+  .sy-chip .sy-lbl { display: none; }
+  .sy-chip .sy-n { display: inline-flex; }
+  /* one offline sign in the cramped phone topbar — the chip says it, and how much is waiting —
+     so the page title keeps its room */
+  .topbar:has(.sy-chip[data-state="offline"]:not([hidden])) .net-status.offline { display: none; }
+  /* signed out and offline there is nothing to sync or sign in to: the app's own Offline pill stays alone */
+  .sy-chip[data-state="off"][data-net="off"] { display: none; }
+}
+/* the app's "Back online — updating prices" pill (shown for 4 s) needs the room on phones and narrow windows.
+   The chip stays — what sync does right after reconnecting (or "sign in again") matters most then — but goes
+   icon-only, and on phones, where even the pill alone left the page title no room, the pill shrinks to its dot */
+@media (max-width: 1100px) {
+  .topbar:has(.net-status.reconnect) .sy-chip { padding: 8px; }
+  .topbar:has(.net-status.reconnect) .sy-chip .sy-lbl { display: none; }
+  .topbar:has(.net-status.reconnect) .sy-chip .sy-n { display: inline-flex; }
+}
+@media (max-width: 860px) {
+  .topbar:has(.sy-chip:not([hidden])) .net-status.reconnect { padding: 7px; }
+  .topbar:has(.sy-chip:not([hidden])) .net-status.reconnect #net-status-text { display: none; }
+}
+/* big phones in landscape get the desktop rail — the chip goes icon-only like the other topbar buttons there */
+@media screen and (hover: none) and (pointer: coarse) and (min-width: 861px) and (max-width: 1100px) {
+  .topbar .sy-chip .sy-lbl { display: none; }
+  .topbar .sy-chip .sy-n { display: inline-flex; }
+}
+
+/* ── Shared by the dialog and the Settings section ──────── */
+.sy-box { container: sy / inline-size; }
+.sy-dlg, .sy-set { min-width: 0; }
+.sy-lead { font-size: 13.5px; line-height: 1.55; color: var(--t2); }
+.sy-lead:focus { outline: none; }
+.sy-p { font-size: 13px; line-height: 1.55; color: var(--t2); }
+.sy-lead b, .sy-p b { color: var(--t1); }
+.sy-p.dim { color: var(--t3); }
+.sy-sm { font-size: 12.5px; }
+.sy-mt { margin-top: 12px; }
+.sy-h2 { font-family: var(--disp); font-size: 16px; font-weight: 700; letter-spacing: -.1px; }
+.sy-h2:focus { outline: none; }
+.sy-sh { margin: 18px 0 8px; font-size: 11px; font-weight: 800; letter-spacing: .7px; text-transform: uppercase; color: var(--t3); }
+.sy-sh:first-child { margin-top: 0; }
+.sy-acts { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.sy-acts:empty { display: none; }
+.sy-spin {
+  display: inline-block; flex-shrink: 0; width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid currentColor; border-right-color: transparent; animation: sy-spin .8s linear infinite;
+}
+:is(.sy-box, .sy-set, .sy-form) button[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
+.sy-alert { margin-bottom: 0; }
+/* an email address has no break points: a long one would push its card (or a whole dialog, close button and
+   all) past a phone's edge. 'anywhere', unlike break-word, also lets the dialog itself shrink to fit. */
+.sy-em, .sy-msg { overflow-wrap: anywhere; }
+/* a dialog fitted above the phone keyboard (sync-ui.js fitKb): the keyboard covers the home indicator, so no
+   room is kept for it */
+.sy-kb .modal-body:last-child { padding-bottom: 18px; }
+/* a note inside the "Delete cloud copy" confirmation */
+.sy-cm {
+  margin-top: 12px; padding: 9px 11px; border-radius: var(--r-sm); font-size: 12.5px; line-height: 1.5; color: var(--t2);
+  background: rgba(59,130,246,.08); border: 1px solid rgba(59,130,246,.24);
+}
+.sy-cm b { color: var(--t1); }
+
+/* ── Sign in / create account ───────────────────────────── */
+/* one column (form under the intro) — two side by side once the dialog or card is wide enough */
+.sy-auth { display: grid; gap: 18px; grid-template-areas: "intro" "form" "how"; }
+.sy-intro { grid-area: intro; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.sy-formwrap { grid-area: form; min-width: 0; }
+.sy-how { grid-area: how; min-width: 0; }
+@container sy (min-width: 600px) {
+  .sy-auth { grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); grid-template-areas: "intro form" "how form"; column-gap: 26px; align-items: start; }
+  .sy-formwrap { padding: 16px; border-radius: var(--r-md); background: rgba(0,0,0,.2); border: 1px solid var(--stroke); }
+}
+.sy-ctx {
+  display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: var(--r-sm);
+  font-size: 12.5px; line-height: 1.5; color: var(--t2); background: rgba(59,130,246,.07); border: 1px solid rgba(59,130,246,.2);
+}
+.sy-ctx svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; color: var(--violet-l); }
+.sy-ctx b { color: var(--t1); }
+.sy-form { display: flex; flex-direction: column; gap: 14px; }
+.sy-seg button { padding: 8px; }
+.sy-eye { cursor: pointer; color: var(--t2); }
+.sy-eye:hover { color: var(--t1); }
+.sy-eye svg { width: 16px; height: 16px; }
+/* finger-sized: the eye and "Forgot password?" are smaller than the kit's 40px buttons */
+@media screen and (hover: none) and (pointer: coarse) {
+  .sy-eye { min-width: 44px; justify-content: center; }
+  .sy-forgot { min-height: 40px; }
+}
+.sy-form .input[aria-invalid="true"] { border-color: var(--down-br); box-shadow: 0 0 0 3px var(--down-bg); }
+.sy-form .hint:empty { display: none; }
+.sy-msg { padding: 10px 12px; border-radius: var(--r-sm); font-size: 13px; line-height: 1.5; color: var(--t1); }
+.sy-msg:empty { display: none; }
+.sy-msg.err { background: var(--down-bg); border: 1px solid var(--down-br); }
+.sy-msg.ok { background: rgba(59,130,246,.1); border: 1px solid rgba(59,130,246,.3); }
+.sy-form .sy-go { min-width: 148px; }
+.sy-sent { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.sy-sent:focus { outline: none; }
+.sy-bigic {
+  display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 14px;
+  color: var(--violet-l); background: var(--grad-soft); border: 1px solid rgba(59,130,246,.3);
+}
+.sy-bigic svg { width: 22px; height: 22px; }
+.sy-pts, .sy-cases { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.sy-pts li { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.5; color: var(--t2); }
+.sy-pts li > svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; color: var(--violet-l); }
+.sy-pts b, .sy-cases b { color: var(--t1); }
+.sy-cases { margin-top: 8px; }
+.sy-cases li { position: relative; padding-left: 16px; font-size: 12.5px; line-height: 1.5; color: var(--t2); }
+.sy-cases li::before { content: ""; position: absolute; left: 3px; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: var(--violet-l); }
+
+/* ── Setting up · summary · signed in ───────────────────── */
+.sy-prog, .sy-done, .sy-stat { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.sy-log { list-style: none; display: flex; flex-direction: column; gap: 9px; padding: 12px 14px; border-radius: var(--r-sm); background: rgba(0,0,0,.2); border: 1px solid var(--stroke); }
+.sy-log li { display: flex; align-items: center; gap: 10px; min-width: 0; font-size: 13px; line-height: 1.45; color: var(--t2); }
+.sy-log li b { color: var(--t1); overflow-wrap: anywhere; }
+.sy-li { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; color: var(--violet-l); }
+.sy-li svg { width: 13px; height: 13px; }
+.sy-log li.done .sy-li { background: rgba(59,130,246,.14); }
+.sy-log li.skip, .sy-log li.skip .sy-li { color: var(--t3); }
+.sy-log li.warn { color: var(--amber); }
+.sy-log li.warn .sy-li { color: var(--amber); background: var(--amber-bg); }
+.sy-done .sy-lead { font-size: 14.5px; }
+.sy-next { padding: 14px 16px; border-radius: var(--r-md); background: rgba(0,0,0,.18); border: 1px solid var(--stroke); }
+.sy-who { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.sy-av {
+  flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  background: var(--grad); color: #fff; font-family: var(--disp); font-size: 15px; font-weight: 800; box-shadow: inset 0 1px 0 rgba(255,255,255,.3);
+}
+.sy-whot { display: flex; flex-direction: column; gap: 1px; min-width: 0; font-size: 12px; }
+.sy-email { font-size: 14px; color: var(--t1); overflow-wrap: anywhere; }
+.sy-state { display: flex; align-items: flex-start; gap: 11px; padding: 12px 14px; border-radius: var(--r-sm); background: rgba(0,0,0,.2); border: 1px solid var(--stroke); }
+.sy-state .sy-ic { display: inline-flex; flex-shrink: 0; margin-top: 1px; color: var(--t3); }
+.sy-state .sy-ic svg { width: 20px; height: 20px; }
+.sy-state > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.sy-state b { font-size: 14px; color: var(--t1); }
+.sy-sd { font-size: 12.5px; line-height: 1.45; color: var(--t2); overflow-wrap: anywhere; }
+.sy-state:is([data-state="synced"], [data-state="syncing"]) .sy-ic { color: var(--violet-l); }
+.sy-state[data-state="syncing"] .sy-ic svg { animation: sy-spin 1.1s linear infinite; }
+.sy-state[data-state="offline"] { background: var(--amber-bg); border-color: var(--amber-br); }
+.sy-state[data-state="offline"] .sy-ic { color: var(--amber); }
+.sy-state[data-state="error"] { background: var(--down-bg); border-color: var(--down-br); }
+.sy-state[data-state="error"] .sy-ic { color: var(--down); }
+.sy-rows { display: flex; flex-direction: column; }
+.sy-row { display: flex; align-items: baseline; gap: 12px; padding: 8px 2px; border-bottom: 1px solid rgba(255,255,255,.05); font-size: 13px; }
+.sy-row:last-child { border-bottom: none; }
+.sy-row .sl { flex-shrink: 0; color: var(--t2); }
+.sy-row .sv { margin-left: auto; min-width: 0; text-align: right; font-weight: 600; color: var(--t1); overflow-wrap: anywhere; }
+.sy-alerts { display: flex; flex-direction: column; gap: 10px; }
+.sy-alerts:empty { display: none; }
+.sy-badge:is([data-state="synced"], [data-state="syncing"]) { background: rgba(125,211,252,.1); color: var(--violet-l); border: 1px solid rgba(125,211,252,.26); }
+.sy-badge[data-state="off"] { background: var(--glass2); color: var(--t2); border: 1px solid var(--stroke); }
+.sy-badge:is([data-state="offline"], [data-state="auth"]) { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-br); }
+.sy-badge[data-state="error"] { background: var(--down-bg); color: var(--down); border: 1px solid var(--down-br); }
+
+/* ── "Use it on your iPhone" ────────────────────────────── */
+.sy-url { display: flex; flex-wrap: wrap; gap: 8px; }
+.sy-url .input { flex: 1 1 220px; min-width: 0; font-size: 12.5px; }
+.sy-ol { list-style: none; counter-reset: sy-step; display: flex; flex-direction: column; gap: 10px; margin: 14px 0 12px; }
+.sy-ol li { counter-increment: sy-step; position: relative; min-height: 22px; padding-left: 32px; font-size: 13px; line-height: 1.5; color: var(--t2); }
+.sy-ol li::before {
+  content: counter(sy-step); position: absolute; left: 0; top: -1px; width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800;
+  color: var(--violet-l); background: rgba(59,130,246,.14); border: 1px solid rgba(59,130,246,.3);
+}
+.sy-ol b { color: var(--t1); }
+.sy-gl { display: inline-flex; vertical-align: -3px; color: var(--violet-l); }
+.sy-gl svg { width: 15px; height: 15px; }
+
+/* ── Settings section ───────────────────────────────────── */
+.sy-card .sy-ol:last-child, .sy-card .sy-p:last-child { margin-bottom: 0; }

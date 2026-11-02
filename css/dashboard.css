@@ -1,0 +1,77 @@
+/* ═══ Dashboard (app.js) — prefix db- ═══ */
+.db-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+.db-grid > div { min-width: 0; }
+.db-grid > div > .card { height: 100%; }
+@media (min-width: 900px) {
+  .db-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .db-a, .db-g { grid-column: 1 / -1; }
+}
+@media (min-width: 1280px) {
+  .db-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .db-a { grid-column: span 8; } .db-b { grid-column: span 4; }
+  .db-c { grid-column: span 5; } .db-d { grid-column: span 7; }
+  .db-e { grid-column: span 7; } .db-f { grid-column: span 5; }
+  .db-g { grid-column: 1 / -1; }
+}
+
+/* Hero + 5 tiles on one row at desktop widths */
+@media (min-width: 1280px) { .db-kpis { grid-template-columns: minmax(0, 1.9fr) repeat(5, minmax(0, 1fr)); } .db-kpis .kpi.hero { grid-column: auto; } }
+/* KPI hero sparkline sits bottom-right */
+.db-kpis .kpi.hero .k-foot svg { opacity: .95; }
+.db-kpis .kpi .k-sub .conf { margin-left: 2px; vertical-align: 1px; }
+
+/* Calendar card */
+.db-cal .card-title { gap: 4px; }
+.db-cal-m { min-width: 120px; text-align: center; font-size: 14px; }
+.db-cal .cal-grid { gap: 4px; }
+.db-cal .cal-d, .db-cal .cal-week { min-height: 50px; padding: 4px 3px; }
+.db-cal .cal-d .dt, .db-cal .cal-week .wn, .db-cal .cal-week .wl { display: none; }
+.db-cal .cal-d .dp, .db-cal .cal-week b { font-size: 10.5px; letter-spacing: -.4px; text-overflow: clip; }
+.db-cal .cal-d .dn { padding-left: 2px; }
+.db-cal-sum { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--t2); margin-top: 12px; }
+.db-cal-sum b { font-family: var(--mono); color: var(--t1); }
+
+/* Today card */
+.db-today-head { display: flex; flex-direction: column; gap: 3px; padding: 11px 13px; border-radius: var(--r-sm); margin-bottom: 12px; border: 1px solid var(--stroke); }
+.db-today-head b { font-size: 14px; }
+.db-today-head span { font-size: 12.5px; color: var(--t2); }
+.db-today-head.ok { background: var(--up-bg); border-color: var(--up-br); }
+.db-today-head.warn { background: var(--amber-bg); border-color: var(--amber-br); }
+.db-today-head.stop { background: var(--down-bg); border-color: var(--down-br); }
+.db-today-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.db-today-stats > div { display: flex; flex-direction: column; gap: 3px; padding: 9px 11px; border-radius: 10px; background: rgba(255,255,255,.03); border: 1px solid var(--stroke); min-width: 0; }
+.db-today-stats .dim { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
+.db-today-stats b { font-family: var(--mono); font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Open positions */
+.db-heat { margin-bottom: 12px; }
+.db-pos-list { display: flex; flex-direction: column; gap: 6px; }
+.db-pos { display: flex; align-items: center; gap: 12px; padding: 9px 11px; border-radius: 12px; border: 1px solid var(--stroke); background: rgba(255,255,255,.02); cursor: pointer; transition: border-color var(--dur-1), background var(--dur-1); }
+.db-pos:hover { border-color: var(--stroke2); background: rgba(255,255,255,.035); }
+.db-pos-l { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+.db-pos-r { text-align: right; min-width: 0; }
+.db-pos-r .mono { font-weight: 700; font-size: 13.5px; white-space: nowrap; }
+.db-pos-r small { font-size: 11px; color: var(--t2); }
+.db-pos-sub { font-size: 11.5px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Readiness mini */
+.db-ready-row { display: flex; align-items: center; gap: 16px; }
+.db-ready-row .gauge-wrap .gv b { font-size: 20px; }
+.db-ready-v { display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; color: var(--t2); min-width: 0; align-items: flex-start; }
+.db-ready-v > b { font-size: 15px; color: var(--t1); }
+.db-ready-v .badge { white-space: normal; }
+
+/* Recent trades */
+.db-recent-list { display: grid; grid-template-columns: 1fr; gap: 6px; }
+@media (min-width: 1080px) { .db-recent-list { grid-template-columns: 1fr 1fr; } }
+.db-rt { display: flex; align-items: center; gap: 11px; padding: 9px 11px; border-radius: 12px; border: 1px solid var(--stroke); background: rgba(255,255,255,.02); cursor: pointer; min-width: 0; transition: border-color var(--dur-1), background var(--dur-1); }
+.db-rt:hover { border-color: var(--stroke2); background: rgba(255,255,255,.035); }
+.db-rt-m { flex: 1; min-width: 0; }
+.db-rt-s { font-size: 11.5px; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.db-rt-v { font-weight: 700; font-size: 13.5px; white-space: nowrap; }
+
+@media (max-width: 560px) {
+  .db-today-stats { grid-template-columns: 1fr 1fr; }
+  .db-pos { flex-wrap: wrap; }
+  .db-ready-row { flex-direction: column; align-items: flex-start; }
+}

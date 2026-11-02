@@ -1,0 +1,348 @@
+/* ═══════════════════════════════════════════════════════════
+   CryptoJournal — Journal page (jn-)
+   Builds on the shared kit in styles.css (card, cal-grid/cal-big,
+   checklist/ck, seg, chip, badge, meter, stat-row, reading, form).
+   Tokens only; P/L marks use --chart-up/--chart-down, text keeps
+   --up/--down, so the colour-blind palette re-tints everything.
+   The day drawer, review / missed-trade modals and the printable
+   review sheet live outside the page section, so their roots
+   (.jn-day, .jn-rv, .jn-mm, .jn-print-sheet) are scoped too.
+   ═══════════════════════════════════════════════════════════ */
+
+/* Sprite icons carry no size attributes — default them; rules below override */
+:where(.jn, .jn-day, .jn-rv, .jn-mm, .jn-print-sheet) :where(svg:not([width])) { width: 14px; height: 14px; flex-shrink: 0; }
+
+.jn { display: flex; flex-direction: column; gap: 16px; }
+.jn-sub { font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.jn-empty { font-size: 12.5px; color: var(--t3); padding: 12px 2px; line-height: 1.5; }
+.jn-gated { color: var(--t3) !important; }
+.jn-kbd { font-size: 11.5px; display: inline-flex; align-items: center; gap: 4px; }
+@media (max-width: 560px) { .jn-kbd { display: none; } }
+
+/* ─── Today card ───────────────────────────────────────── */
+.jn-today { overflow: hidden; background: var(--gloss-soft), var(--grad-soft); border-color: rgba(59,130,246,.3); }
+.jn-today::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--mode); }
+.jn-today::after {
+  content: ""; position: absolute; top: -80px; right: -60px; width: 240px; height: 240px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(56,189,248,.16), transparent 70%);
+}
+.jn-today-grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 18px 28px; align-items: start; }
+@container (max-width: 760px) { .jn-today-grid { grid-template-columns: minmax(0, 1fr); } }
+.jn-today-main { min-width: 0; }
+.jn-eyebrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--violet-l); }
+.jn-eyebrow svg { width: 13px; height: 13px; }
+.jn-today-t { font-family: var(--disp); font-size: 23px; font-weight: 800; letter-spacing: -.5px; line-height: 1.2; margin-top: 8px; color: var(--t1); }
+.jn-today-s { font-size: 13px; color: var(--t2); line-height: 1.55; margin-top: 5px; max-width: 620px; }
+.jn-goal {
+  display: flex; gap: 10px; align-items: flex-start; margin-top: 12px; padding: 10px 13px; max-width: 620px;
+  border-radius: var(--r-sm); background: rgba(0,0,0,.22); border: 1px solid rgba(125,211,252,.24); font-size: 13.5px; font-weight: 600; line-height: 1.45;
+}
+.jn-goal svg { width: 17px; height: 17px; color: var(--violet-l); margin-top: 1px; }
+.jn-goal b { display: block; font-size: 10.5px; letter-spacing: .8px; text-transform: uppercase; color: var(--violet-l); font-weight: 800; margin-bottom: 2px; }
+.jn-goal.soft { border-style: dashed; border-color: var(--stroke2); }
+.jn-goal.soft b { color: var(--t3); }
+.jn-rd-note { display: flex; gap: 9px; align-items: flex-start; margin-top: 10px; padding: 9px 12px; max-width: 620px; border-radius: var(--r-sm); font-size: 12.5px; line-height: 1.45; color: var(--t1); }
+.jn-rd-note svg { width: 15px; height: 15px; margin-top: 1px; }
+.jn-rd-note.warn { background: var(--amber-bg); border: 1px solid var(--amber-br); }
+.jn-rd-note.warn svg { color: var(--amber); }
+.jn-rd-note.stop { background: var(--down-bg); border: 1px solid var(--down-br); }
+.jn-rd-note.stop svg { color: var(--down); }
+.jn-today-acts { margin-top: 14px; }
+.jn-nudges { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; font-size: 12.5px; }
+.jn-today-side { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.jn-steps .ck { padding: 8px 11px; background: rgba(0,0,0,.18); }
+.jn-steps .ck .cb { margin-top: 0; }
+.jn-step-t { display: flex; flex-direction: column; min-width: 0; }
+.jn-step-t .cs { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jn-stepn { font-size: 11px; font-weight: 800; color: var(--t3); }
+.jn-tstats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.jn-tstat, .jn-ds {
+  display: flex; flex-direction: column; gap: 3px; min-width: 0;
+  padding: 9px 11px; border-radius: 10px; background: rgba(0,0,0,.2); border: 1px solid var(--stroke);
+}
+.jn-tstat .l, .jn-ds .l { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--t3); display: flex; align-items: center; gap: 5px; }
+.jn-tstat b, .jn-ds b {
+  font-family: var(--mono); font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 5px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums slashed-zero;
+}
+.jn-tstat small, .jn-ds small { font-size: 11px; color: var(--t3); line-height: 1.35; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.jn-fire { width: 14px; height: 14px; color: var(--amber); }
+@media (max-width: 420px) { .jn-tstats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ─── Header: month navigation + view switch ───────────── */
+.jn-head { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; margin-bottom: 14px; }
+.jn-mnav { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.jn-mlabel { font-family: var(--disp); font-size: 19px; font-weight: 800; letter-spacing: -.3px; min-width: 168px; text-align: center; }
+.jn-head-r { margin-left: auto; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+@container (max-width: 520px) { .jn-head-r { margin-left: 0; } .jn-mlabel { min-width: 0; font-size: 17px; } }
+
+/* Summary strip (6 tiles → 3 → 2) */
+.jn-sum { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
+@container (max-width: 1100px) { .jn-sum { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@container (max-width: 520px) { .jn-sum { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.jn-st {
+  display: flex; flex-direction: column; gap: 4px; min-width: 0; text-align: left; font: inherit; color: inherit;
+  padding: 11px 13px; border-radius: var(--r-sm); background: rgba(0,0,0,.18); border: 1px solid var(--stroke);
+}
+.jn-st.hero { background: var(--gloss-soft), var(--grad-soft); border-color: rgba(59,130,246,.3); }
+.jn-st-l { font-size: 11px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; color: var(--t2); display: flex; align-items: center; gap: 5px; }
+.jn-st-v {
+  font-family: var(--mono); font-size: 19px; font-weight: 700; letter-spacing: -.4px; line-height: 1.15;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums slashed-zero;
+}
+.jn-st.hero .jn-st-v { font-size: 22px; }
+.jn-st-s { font-size: 11.5px; color: var(--t3); line-height: 1.35; display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
+.jn-st-btn { cursor: pointer; transition: border-color var(--dur-1), background var(--dur-1); }
+.jn-st-btn:hover { border-color: var(--stroke2); background: rgba(255,255,255,.035); }
+
+/* ─── Month calendar (Charts.calendar inside .cal-big) ── */
+.jn-cal .cal-grid { gap: 6px; }
+@container (min-width: 1000px) { .jn-cal .cal-d, .jn-cal .cal-week { min-height: 100px; padding: 8px 9px; } .jn-cal .cal-d .dp { font-size: 15.5px; } }
+.jn-cal .cal-d.jn-flagged:not(.today) { box-shadow: inset 0 0 0 1px var(--amber-br); }
+/* Rule-break "!" (Charts.calendar marks → .cal-mark) drawn as the same amber disc as the legend key */
+.jn-cal .cal-d .cal-mark, .jn-flag-k {
+  display: inline-flex; align-items: center; justify-content: center; width: 13px; height: 13px; border-radius: 50%;
+  background: var(--amber-bg); border: 1px solid var(--amber-br); color: var(--amber);
+  font-size: 9px; font-weight: 800; font-style: normal; line-height: 1;
+}
+.jn-cal .cal-d .cal-mark { top: 5px; right: 17px; }
+/* Phones: .cal-big's 88px cells would be tall slivers — shrink them, and move the ! marker clear of the day number */
+@container (max-width: 560px) {
+  .jn-cal .cal-grid { gap: 4px; }
+  .jn-cal .cal-d, .jn-cal .cal-week { min-height: 54px; padding: 4px; }
+  .jn-cal .cal-d .dp, .jn-cal .cal-week b { font-size: 10.5px; letter-spacing: -.3px; text-overflow: clip; }
+  .jn-cal .cal-week .wl { display: none; }
+  .jn-cal .cal-d .cal-mark { width: 10px; height: 10px; font-size: 7px; top: 3px; right: 3px; }
+  .jn-cal .cal-d .note-dot { top: auto; bottom: 4px; right: 4px; width: 5px; height: 5px; }
+}
+/* ≈360px phones: a day column is ~30px — give the numbers every pixel so "+$1.2k" / "−0.5R" stay readable */
+@media (max-width: 420px) { .jn-cal-card { padding-left: 12px; padding-right: 12px; } }
+@container (max-width: 400px) {
+  .jn-cal .cal-grid { gap: 2px; }
+  .jn-cal .cal-h { font-size: 9.5px; letter-spacing: 0; overflow: hidden; }
+  .jn-cal .cal-d, .jn-cal .cal-week { padding: 3px 2px; min-height: 48px; border-radius: 6px; }
+  .jn-cal .cal-d .dn { font-size: 10px; }
+  .jn-cal .cal-d .dp, .jn-cal .cal-week b { font-size: 9.5px; letter-spacing: -.5px; }
+}
+
+/* Legend + reading under the calendar */
+.jn-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; margin-top: 12px; font-size: 11.5px; color: var(--t2); font-weight: 600; }
+.jn-legend > span { display: inline-flex; align-items: center; gap: 6px; }
+.jn-sw { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+.jn-sw.pos { background: color-mix(in oklab, var(--chart-up) 62%, transparent); }
+.jn-sw.neg { background: color-mix(in oklab, var(--chart-down) 62%, transparent); }
+.jn-sw.flat { background: var(--flat-bg); border: 1px solid var(--flat-br); }
+.jn-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--violet-l); display: inline-block; }
+.jn-read { margin-top: 12px; }
+
+/* ─── Year view: GitHub-style 53×7 grid ────────────────── */
+.jn-year { overflow-x: auto; padding: 2px 2px 8px; scrollbar-width: thin; scrollbar-color: var(--t4) transparent; }
+.jn-yg {
+  display: grid; grid-template-columns: 30px repeat(var(--wk, 53), minmax(11px, 1fr)); grid-template-rows: 16px repeat(7, auto);
+  gap: 3px; min-width: calc(30px + var(--wk, 53) * 14px); max-width: 1320px;
+}
+.jn-ym { grid-row: 1; align-self: end; font-size: 10.5px; color: var(--t3); font-weight: 700; white-space: nowrap; overflow: visible; }
+.jn-ywd { grid-column: 1; align-self: center; font-size: 10px; color: var(--t3); font-weight: 600; }
+.jn-yc { aspect-ratio: 1; min-width: 0; padding: 0; border: none; border-radius: 3px; background: rgba(255,255,255,.04); position: relative; }
+button.jn-yc { cursor: pointer; transition: filter var(--dur-1); }
+button.jn-yc:hover { filter: brightness(1.35); }
+.jn-yc.out { background: none; }
+.jn-yc.has { box-shadow: inset 0 0 0 1px rgba(255,255,255,.07); }
+.jn-yc.flat { background-color: var(--flat-bg); }
+/* Loss days are striped as well as tinted (shape cue for colour-blind users) */
+.jn-yc.neg, .jn-legend.yr .jn-sw.neg { background-image: repeating-linear-gradient(135deg, rgba(4,7,15,.5) 0 1.5px, transparent 1.5px 4px); }
+.jn-yc.fl { box-shadow: inset 0 0 0 1.5px var(--amber); }
+.jn-yc.today { box-shadow: inset 0 0 0 1.5px var(--violet-l); }
+.jn-yc.fut { opacity: .4; }
+.jn-yc.nt::after { content: ""; position: absolute; top: 2px; right: 2px; width: 3px; height: 3px; border-radius: 50%; background: var(--violet-l); }
+/* Month totals strip under the grid */
+.jn-months { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
+@container (max-width: 900px) { .jn-months { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+@container (max-width: 420px) { .jn-months { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.jn-mo {
+  display: flex; flex-direction: column; gap: 2px; min-width: 0; text-align: left; cursor: pointer;
+  padding: 8px 9px; border-radius: 10px; border: 1px solid var(--stroke); background: rgba(255,255,255,.02);
+  transition: border-color var(--dur-1), background var(--dur-1);
+}
+.jn-mo span { font-size: 10.5px; font-weight: 800; color: var(--t2); text-transform: uppercase; letter-spacing: .5px; }
+.jn-mo b { font-family: var(--mono); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jn-mo small { font-size: 10.5px; color: var(--t3); }
+.jn-mo:hover:not([disabled]) { border-color: var(--stroke2); background: rgba(255,255,255,.035); }
+.jn-mo[disabled] { opacity: .4; cursor: default; }
+
+/* ─── Lower grid: reviews · queue · missed ─────────────── */
+.jn-cols { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (min-width: 900px) {
+  .jn-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .jn-cols > .jn-miss-card { grid-column: 1 / -1; }
+}
+@media (min-width: 1380px) {
+  .jn-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .jn-cols > .jn-miss-card { grid-column: auto; }
+}
+.jn-list { display: flex; flex-direction: column; gap: 6px; }
+.jn-more { display: flex; gap: 8px 14px; flex-wrap: wrap; align-items: center; margin-top: 10px; font-size: 12.5px; }
+
+/* Review rows */
+.jn-rv-row {
+  display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; cursor: pointer; font: inherit; color: inherit;
+  padding: 10px 12px; border-radius: 12px; border: 1px solid var(--stroke); background: rgba(255,255,255,.02);
+  transition: border-color var(--dur-1), background var(--dur-1);
+}
+.jn-rv-row:hover { border-color: var(--stroke2); background: rgba(255,255,255,.035); }
+.jn-rv-row.due { border-color: var(--amber-br); background: linear-gradient(90deg, var(--amber-bg), transparent 70%); }
+.jn-rv-row.none { opacity: .75; }
+.jn-rv-ic { width: 28px; height: 28px; border-radius: 9px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--glass2); color: var(--t2); }
+.jn-rv-row.done .jn-rv-ic { background: rgba(125,211,252,.12); color: var(--violet-l); }
+.jn-rv-row.due .jn-rv-ic { background: var(--amber-bg); color: var(--amber); }
+.jn-rv-m { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.jn-rv-m b { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jn-rv-m .jn-sub { color: var(--t3); }
+.jn-rv-st { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex-shrink: 0; }
+.jn-mini-stars { color: var(--amber); font-size: 11px; letter-spacing: 1px; }
+.jn-mini-stars .dim { color: var(--t4); }
+
+/* Trade / missed rows (queue, missed log, day drawer) */
+.jn-q { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.jn-q-main {
+  flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; text-align: left; cursor: pointer; font: inherit; color: inherit;
+  padding: 9px 11px; border-radius: 12px; border: 1px solid var(--stroke); background: rgba(255,255,255,.02);
+  transition: border-color var(--dur-1), background var(--dur-1);
+}
+.jn-q-main:hover { border-color: var(--stroke2); background: rgba(255,255,255,.035); }
+.jn-q-m { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.jn-q-m > .row b { font-size: 13px; }
+.jn-q-v { flex-shrink: 0; font-weight: 700; font-size: 13px; white-space: nowrap; text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+.jn-q-v small { font-size: 11px; color: var(--t2); font-weight: 600; }
+.jn-mi-n { font-size: 12px; color: var(--t2); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.jn-allgood {
+  display: flex; align-items: center; gap: 10px; padding: 14px; border-radius: var(--r-sm);
+  background: rgba(125,211,252,.07); border: 1px solid rgba(125,211,252,.22); font-weight: 700; font-size: 13.5px;
+}
+.jn-allgood svg { width: 16px; height: 16px; color: var(--violet-l); }
+.jn-msum { display: flex; flex-direction: column; gap: 7px; margin-bottom: 12px; }
+.jn-msum-v { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--t2); line-height: 1.45; }
+.jn-msum-v svg { margin-top: 2px; color: var(--violet-l); }
+.jn-msum-v b { color: var(--t1); }
+.jn-msum-v b.pos { color: var(--up); } .jn-msum-v b.neg { color: var(--down); }
+@media (max-width: 420px) { .jn-q-main { padding: 8px 9px; gap: 8px; } .jn-q-main .coin-ic { display: none; } }
+
+/* ─── Day drawer ───────────────────────────────────────── */
+.jn-day { display: flex; flex-direction: column; gap: 14px; }
+.jn-draft { margin-bottom: 0; }
+.jn-dsum { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 520px) { .jn-dsum { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.jn-auto { display: flex; flex-direction: column; gap: 8px; padding: 11px 13px; border-radius: var(--r-sm); background: var(--amber-bg); border: 1px solid var(--amber-br); font-size: 12.5px; }
+.jn-auto-h { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.jn-auto-h svg { color: var(--amber); }
+.jn-auto-h .dim { font-size: 11.5px; margin-left: auto; }
+.jn-ov { display: flex; gap: 8px; align-items: flex-start; line-height: 1.45; color: var(--t2); }
+.jn-ov svg { color: var(--amber); margin-top: 2px; }
+.jn-ov b { color: var(--t1); }
+/* Collapsible sections */
+.jn-sec { border: 1px solid var(--stroke); border-radius: var(--r-md); background: rgba(255,255,255,.02); min-width: 0; }
+.jn-sec-h { display: flex; align-items: center; gap: 10px; padding: 12px 14px; }
+summary.jn-sec-h { cursor: pointer; list-style: none; border-radius: var(--r-md); }
+summary.jn-sec-h::-webkit-details-marker { display: none; }
+summary.jn-sec-h::before { content: "▸"; color: var(--t3); font-size: 11px; transition: transform var(--dur-2); }
+details.jn-sec[open] > summary.jn-sec-h::before { transform: rotate(90deg); }
+summary.jn-sec-h:hover h4 { color: var(--t1); }
+.jn-sec-h h4 { font-family: var(--disp); font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; color: var(--t1); }
+.jn-sec-h h4 svg { width: 15px; height: 15px; color: var(--violet-l); }
+.jn-sec-h .aside { margin-left: auto; font-size: 11.5px; color: var(--t3); font-weight: 600; text-align: right; }
+.jn-sec-b { padding: 2px 14px 14px; }
+.jn-sec-b.form-grid { gap: 12px; }
+.jn-tr-acts { margin-top: 10px; }
+.jn-carry {
+  grid-column: 1 / -1; display: flex; gap: 9px; align-items: flex-start; flex-wrap: wrap;
+  padding: 9px 11px; border-radius: 10px; background: rgba(59,130,246,.07); border: 1px solid rgba(59,130,246,.2);
+  font-size: 12.5px; color: var(--t2); line-height: 1.45;
+}
+.jn-carry > span { flex: 1; min-width: 180px; }
+.jn-carry svg { margin-top: 2px; color: var(--violet-l); }
+.jn-carry b { color: var(--t1); }
+.jn-carry .link-btn { white-space: nowrap; font-size: 12px; }
+.jn-ideas { margin-top: 2px; }
+.jn-ideas .chip { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+/* Readiness check-in */
+.jn-scales { gap: 10px; }
+.jn-scale { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 3px 10px; align-items: center; }
+.jn-scale-l { font-size: 12.5px; font-weight: 700; color: var(--t2); }
+.jn-scale-s button { font-family: var(--mono); }
+.jn-scale-e { grid-column: 2; display: flex; justify-content: space-between; gap: 8px; font-size: 10.5px; color: var(--t3); font-weight: 600; padding: 0 4px; }
+.jn-halt { border: none; padding: 0; margin: 0; }
+.jn-halt > legend { display: flex; align-items: center; gap: 5px; padding: 0; margin-bottom: 7px; font-size: 11.5px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--t3); }
+.jn-halt-g { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+@media (max-width: 520px) { .jn-halt-g { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.jn-halt-g .check { padding: 8px 10px; border-radius: 10px; border: 1px solid var(--stroke); background: rgba(0,0,0,.22); transition: border-color var(--dur-1), background var(--dur-1); }
+.jn-halt-g .check:hover { border-color: var(--stroke2); }
+.jn-halt-g .check:has(input:checked) { border-color: var(--amber-br); background: var(--amber-bg); color: var(--t1); }
+.jn-ready { padding: 12px 13px; border-radius: var(--r-sm); background: rgba(0,0,0,.22); border: 1px solid var(--stroke); font-size: 12.5px; }
+.jn-rd-w.ok { color: var(--violet-l); } .jn-rd-w.warn { color: var(--amber); } .jn-rd-w.stop { color: var(--down); }
+.jn-ready-a { margin-top: 8px; font-size: 12.5px; line-height: 1.45; color: var(--t2); font-weight: 600; }
+.jn-ready-a.warn { color: var(--amber); } .jn-ready-a.stop { color: var(--down); }
+/* Post-session */
+.jn-anchor { font-size: 12.5px; color: var(--t2); line-height: 1.55; padding: 9px 11px; border-radius: 10px; background: rgba(0,0,0,.2); border: 1px dashed var(--stroke2); }
+.jn-anchor b { color: var(--t1); font-family: var(--mono); }
+.jn-anchor b.pos { color: var(--up); } .jn-anchor b.neg { color: var(--down); }
+.jn-goal-echo { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; font-weight: 600; line-height: 1.45; margin-bottom: 4px; }
+.jn-goal-echo svg { color: var(--violet-l); margin-top: 2px; }
+.jn-goal-echo .dim { font-weight: 500; font-size: 12px; }
+/* Sticky save bar at the bottom of the drawer body (cancels the body's bottom padding) */
+.jn-dfoot {
+  position: sticky; bottom: 0; z-index: 2; display: flex; align-items: center; gap: 10px;
+  margin: 2px -20px -28px; padding: 12px 20px calc(14px + env(safe-area-inset-bottom));
+  background: var(--bg1); border-top: 1px solid var(--stroke); box-shadow: 0 -12px 26px rgba(3,7,20,.45);
+}
+.jn-dfoot .sp { flex: 1; }
+
+/* ─── Review modal ─────────────────────────────────────── */
+.jn-rv { display: flex; flex-direction: column; gap: 16px; }
+.jn-rv-per { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13.5px; }
+.jn-rv-per svg { width: 15px; height: 15px; color: var(--violet-l); }
+.jn-snap { border: 1px solid var(--stroke); border-radius: var(--r-md); padding: 14px; background: rgba(255,255,255,.02); }
+.jn-snap-h { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; font-size: 11.5px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: var(--t2); }
+.jn-snap-h svg { color: var(--violet-l); }
+.jn-snap-h .dim { text-transform: none; letter-spacing: 0; font-weight: 500; margin-left: auto; }
+.jn-snap-g { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 560px) { .jn-snap-g { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.jn-snap .stat-rows { margin-top: 8px; }
+.jn-snap .stat-row { min-height: 36px; padding: 7px 2px; }
+.jn-snap .stat-row .sv { white-space: normal; font-family: var(--sans); font-weight: 600; font-size: 12.5px; }
+.jn-snap .reading { margin-top: 10px; }
+.jn-stale { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 10px; font-size: 12px; color: var(--amber); line-height: 1.45; }
+.jn-prev { display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; border-radius: var(--r-sm); background: rgba(59,130,246,.07); border: 1px solid rgba(59,130,246,.2); }
+.jn-prev-t { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--t2); line-height: 1.45; }
+.jn-prev-t svg { color: var(--violet-l); margin-top: 2px; }
+.jn-prev-t b { color: var(--t1); }
+.jn-prev .seg { max-width: 360px; }
+.jn-stars svg { width: 24px; height: 24px; }
+
+/* ─── Missed-trade modal ───────────────────────────────── */
+.jn-mm .hint.ok-c { color: var(--violet-l); }
+
+/* ─── Print (the month page, or one review → PDF) ──────── */
+.jn-print-sheet { display: none; }
+@media print {
+  .jn-head-r, .jn-today-acts, .jn-nudges, .jn-more, .jn-q .btn, .jn-mnav .btn { display: none !important; }
+  .jn-st, .jn-tstat, .jn-rv-row, .jn-q-main { border-color: #ccc !important; background: #fff !important; color: #111 !important; }
+  /* Ctrl+P on an open review (.printable modal): let the answers grow instead of being clipped */
+  .jn-rv textarea.input { field-sizing: content; min-height: 0; resize: none; }
+  .jn-rv .jn-ideas, .jn-rv .jn-draft { display: none !important; }
+  /* "Print / PDF" button: only the report-card sheet prints (the sprite <svg> stays so <use> icons resolve) */
+  body.jn-printing > :not(.jn-print-sheet):not(svg), body.jn-printing .modal-backdrop.printable.open { display: none !important; }
+  body.jn-printing .jn-print-sheet { display: block; color: #111; font-size: 12px; line-height: 1.5; }
+  .jn-print-sheet header { border-bottom: 2px solid #111; padding-bottom: 8px; margin-bottom: 14px; }
+  .jn-print-sheet .jn-ps-k { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #555; }
+  .jn-print-sheet h2 { font-family: var(--disp); font-size: 18px; margin-top: 2px; }
+  .jn-print-sheet section { margin-top: 12px; break-inside: avoid; }
+  .jn-print-sheet h3 { font-size: 11px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: #333; margin-bottom: 3px; }
+  .jn-print-sheet p { white-space: pre-wrap; }
+  .jn-print-sheet footer { margin-top: 18px; font-size: 10px; color: #666; }
+  .jn-print-sheet .info-tip, .jn-print-sheet .jn-stale, .jn-print-sheet .jn-snap-h svg { display: none !important; }
+  .jn-print-sheet .jn-snap, .jn-print-sheet .jn-ds, .jn-print-sheet .reading { background: #fff !important; border: 1px solid #ccc !important; color: #111 !important; }
+  .jn-print-sheet .jn-snap-h, .jn-print-sheet .jn-ds .l, .jn-print-sheet .jn-ds small, .jn-print-sheet .stat-row .sl, .jn-print-sheet .dim { color: #444 !important; }
+  .jn-print-sheet .reading b, .jn-print-sheet .stat-row .sv { color: #111; }
+  .jn-print-sheet .stat-row { border-bottom-color: #ddd; }
+  .jn-print-sheet .conf { background: none !important; border-color: #999 !important; color: #333 !important; }
+}

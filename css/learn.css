@@ -1,0 +1,252 @@
+/* ═══════════════════════════════════════════════════════════
+   CryptoJournal — Learn page (.ln-): chart patterns, metrics
+   guide (Glossary cards) and crypto-basics lessons.
+   Builds on the shared kit: .tabs, .filterbar, .search-box, .chip,
+   .playbook-grid / .pattern-card, .learn-tip / .learn-list, .badge,
+   .calc-strip, .table-wrap, .progress-track, .conf.
+   Tokens only. Green/red stay reserved for P/L, so "what good looks
+   like" uses the accent and "watch out" uses amber.
+   ═══════════════════════════════════════════════════════════ */
+
+.ln { display: flex; flex-direction: column; min-width: 0; }
+.ln-panel { min-width: 0; }
+.ln-tabs svg { width: 15px; height: 15px; flex-shrink: 0; }
+/* styles.css turns .nav-badge into an absolute corner dot for the 861–1279px icon-rail sidebar;
+   inside the tabs it must stay an inline count (otherwise all three fly to the window corner) */
+.ln-tabs .nav-badge { position: static; font-size: 10.5px; padding: 2px 7px; font-variant-numeric: tabular-nums; }
+
+/* Search matches (text is escaped first, then wrapped) */
+.ln mark {
+  color: var(--t1); background: color-mix(in oklab, var(--violet-l) 24%, transparent);
+  border-radius: 3px; padding: 0 1px; box-shadow: 0 0 0 1px color-mix(in oklab, var(--violet-l) 30%, transparent);
+}
+
+/* Filter row shared by patterns and the metrics guide */
+.ln-bar { gap: 10px; }
+.ln-bar .chip-row { flex: 1 1 auto; min-width: 0; }
+.ln-count { margin-left: auto; white-space: nowrap; }
+@media (max-width: 640px) {
+  .ln-bar .search-box { flex: 1 1 100%; }
+  .ln-bar .search-box .input { width: 100%; min-width: 0; }
+  .ln-count { margin-left: 0; }
+}
+
+/* ── Chart patterns ─────────────────────────────────────── */
+/* "How to spot divergence live" — collapsible, remembers its state */
+.ln-tipd > summary.learn-tip-h { cursor: pointer; list-style: none; margin-bottom: 0; border-radius: var(--r-xs); user-select: none; }
+.ln-tipd > summary::-webkit-details-marker { display: none; }
+.ln-tipd[open] > summary.learn-tip-h { margin-bottom: 6px; }
+.ln-tipd .ln-chev { margin-left: auto; color: var(--t3); transition: transform var(--dur-2) var(--ease-out); }
+.ln-tipd[open] .ln-chev { transform: rotate(180deg); }
+.ln-tipd > summary:hover .ln-chev { color: var(--t1); }
+
+.ln-pgrid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr)); }
+/* the card is a real <button>; its parts are spans, so give them block layout */
+.ln-pcard { display: flex; flex-direction: column; align-items: stretch; }
+.ln-pcard .pattern-svg { display: block; }
+.ln-pcard .pattern-body { flex: 1; }
+.ln-pn { font-family: var(--disp); font-size: 14.5px; font-weight: 700; letter-spacing: -.2px; color: var(--t1); line-height: 1.3; }
+.ln-pcard .pattern-sum { display: block; }
+.ln-span { grid-column: 1 / -1; }
+.ln-foot { margin-top: 16px; font-size: 12px; color: var(--t3); line-height: 1.5; max-width: 760px; }
+/* pattern dialog */
+.ln-pdetail { color: var(--t2); font-size: 13.5px; line-height: 1.6; margin-bottom: 6px; }
+.ln-pos { font-size: 12px; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+/* own class: the shared .page-sub is hidden on phones, and this safety note must always show */
+.ln-disc { margin-top: 6px; font-size: 12.5px; color: var(--t3); line-height: 1.5; }
+
+/* ── Metrics guide ──────────────────────────────────────── */
+.ln-intro { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 10px; margin-bottom: 18px; }
+.ln-principle {
+  display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: var(--r-sm);
+  background: color-mix(in oklab, var(--violet) 7%, transparent); border: 1px solid color-mix(in oklab, var(--violet) 20%, transparent);
+  font-size: 12.5px; color: var(--t2); line-height: 1.5;
+}
+.ln-principle b { color: var(--t1); }
+.ln-pi {
+  width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--violet-l);
+  background: var(--gloss-soft), var(--grad-soft); border: 1px solid color-mix(in oklab, var(--violet) 32%, transparent);
+}
+.ln-confs { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 7px; }
+
+.ln-gh { scroll-margin-top: 76px; }
+.ln-terms { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 14px; }
+.ln-term { display: flex; flex-direction: column; gap: 10px; scroll-margin-top: 76px; }
+.ln-term-h { display: flex; align-items: baseline; gap: 6px 10px; flex-wrap: wrap; }
+.ln-term-h h3 { font-family: var(--disp); font-size: 15px; font-weight: 700; letter-spacing: -.2px; line-height: 1.3; min-width: 0; }
+.ln-min {
+  margin-left: auto; white-space: nowrap; padding: 2px 8px; border-radius: 100px;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .2px; color: var(--t2);
+  background: var(--glass2); border: 1px solid var(--stroke);
+}
+.ln-plain { font-size: 13.5px; color: var(--t1); line-height: 1.55; }
+
+/* Labelled blocks inside a term card */
+.ln-block { padding: 10px 12px; border-radius: var(--r-xs); background: color-mix(in oklab, var(--bg) 45%, transparent); border: 1px solid var(--stroke); }
+.ln-block p { font-size: 12.5px; color: var(--t2); line-height: 1.5; }
+.ln-lbl {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 5px;
+  font-size: 10.5px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; color: var(--t3);
+}
+.ln-lbl svg { width: 13px; height: 13px; flex-shrink: 0; }
+.ln-good { border-left: 2px solid var(--violet-l); }
+.ln-good .ln-lbl { color: var(--violet-l); }
+.ln-caveat { border-left: 2px solid var(--amber); }
+.ln-caveat .ln-lbl { color: var(--amber); }
+
+/* Formulas: readable monospace, wraps instead of scrolling */
+.ln-formula {
+  margin: 0; padding: 10px 12px; border-radius: var(--r-xs);
+  background: color-mix(in oklab, var(--bg) 55%, transparent); border: 1px solid var(--stroke);
+  font-family: var(--mono); font-size: 12px; font-weight: 500; line-height: 1.65; color: var(--t1);
+  white-space: pre-wrap; overflow-wrap: anywhere; tab-size: 2; font-variant-numeric: tabular-nums slashed-zero;
+}
+.ln-block .ln-formula { padding: 0; background: none; border: none; border-radius: 0; }
+
+.ln-term-f { margin-top: auto; padding-top: 2px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.ln-term-f .btn svg { margin-left: -2px; }
+
+/* Deep-link highlight (Learn.show('metrics', key)) — a ring that fades; opacity only */
+.ln-hl::after {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
+  box-shadow: 0 0 0 2px var(--violet-l), 0 0 28px color-mix(in oklab, var(--violet-l) 35%, transparent);
+  animation: ln-flash 2.6s var(--ease-out) forwards;
+}
+@keyframes ln-flash { 0% { opacity: 0; } 12% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; } }
+.ln-term:focus, .ln-lesson:focus { outline: none; }
+.ln-term:focus-visible, .ln-lesson:focus-visible { outline: 2px solid var(--violet-l); outline-offset: 2px; }
+
+/* ── Crypto basics ──────────────────────────────────────── */
+.ln-crypto { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (min-width: 1100px) {
+  .ln-crypto { grid-template-columns: 270px minmax(0, 1fr); }
+  .ln-toc { position: sticky; top: 0; max-height: calc(100dvh - var(--topbar-h) - 40px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--t4) transparent; }
+}
+
+/* Table of contents */
+.ln-toc { padding: 14px; }
+.ln-toc-h { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 13px; margin-bottom: 9px; }
+.ln-toc-h b { font-family: var(--disp); font-size: 14px; }
+.ln-toc-h .dim { font-size: 11.5px; font-weight: 600; }
+.ln-toc .progress-track { height: 6px; margin-bottom: 10px; }
+.ln-toc ol { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+@media (max-width: 1099px) { .ln-toc ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 2px 8px; } }
+.ln-toc button {
+  display: flex; align-items: center; gap: 9px; width: 100%; padding: 7px 8px; border-radius: var(--r-xs);
+  text-align: left; font-size: 12.5px; font-weight: 600; color: var(--t2); cursor: pointer; line-height: 1.35;
+  transition: background var(--dur-1), color var(--dur-1);
+}
+.ln-toc button:hover { background: var(--glass); color: var(--t1); }
+.ln-n {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 10.5px; font-weight: 700; color: var(--t2);
+  background: var(--glass2); border: 1px solid var(--stroke);
+}
+.ln-toc button.read .ln-n { color: var(--violet-l); background: var(--grad-soft); border-color: color-mix(in oklab, var(--violet) 38%, transparent); }
+.ln-tt { min-width: 0; }
+
+/* Lesson cards */
+.ln-lessons { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.ln-lesson { display: flex; flex-direction: column; gap: 14px; padding: 20px 22px; scroll-margin-top: 76px; }
+.ln-lesson-h { display: flex; align-items: center; gap: 12px; }
+.ln-lesson-h h3 { font-family: var(--disp); font-size: 16.5px; font-weight: 700; letter-spacing: -.3px; line-height: 1.3; }
+.ln-lesson-ic {
+  width: 38px; height: 38px; border-radius: var(--r-sm); flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  color: var(--violet-l); background: var(--gloss-soft), var(--grad-soft); border: 1px solid color-mix(in oklab, var(--violet) 32%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--t1) 12%, transparent);
+}
+.ln-lesson-ic svg { width: 18px; height: 18px; }
+.ln-lesson-meta { font-size: 11.5px; color: var(--t3); font-weight: 600; margin-top: 2px; }
+
+.ln-body { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; color: var(--t2); line-height: 1.6; min-width: 0; max-width: 860px; }
+.ln-body b { color: var(--t1); }
+.ln-body ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.ln-body li { position: relative; padding-left: 16px; }
+.ln-body li::before { content: ""; position: absolute; left: 1px; top: .62em; width: 6px; height: 6px; border-radius: 50%; background: var(--violet-l); }
+
+/* Worked example, availability note, "try it" box */
+.ln-ex {
+  padding: 12px 14px; border-radius: var(--r-sm); font-size: 13px; line-height: 1.55;
+  background: color-mix(in oklab, var(--violet) 7%, transparent); border: 1px solid color-mix(in oklab, var(--violet) 20%, transparent);
+  border-left: 3px solid var(--violet);
+}
+.ln-ex .ln-lbl { color: var(--violet-l); }
+.ln-note { padding: 10px 12px; border-radius: var(--r-sm); font-size: 12.5px; line-height: 1.5; color: var(--t2); background: var(--amber-bg); border: 1px solid var(--amber-br); }
+.ln-try { padding: 12px 14px; border-radius: var(--r-sm); border: 1px dashed var(--stroke2); background: color-mix(in oklab, var(--bg) 40%, transparent); }
+.ln-try .ln-lbl { color: var(--violet-l); }
+.ln-try-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 10px; margin-bottom: 10px; }
+.ln-try-grid .input { width: 100%; }
+.ln-strip { margin: 0; }
+.ln-strip .ci { min-width: 0; }
+.ln-strip .ci .v { overflow-wrap: anywhere; }
+.ln-hint { font-size: 12px; color: var(--t3); line-height: 1.5; margin-top: 8px; }
+.ln-hint b { color: var(--t2); }
+
+/* Lesson tables (spot vs perp, leverage, fees, sessions, paper vs live) */
+.ln-tw { margin: 2px 0; }
+.ln-table { font-size: 12.5px; }
+.ln-table thead th { position: static; background: none; backdrop-filter: none; padding: 8px 10px; }
+.ln-table th[scope="row"] { font-weight: 600; color: var(--t1); padding: 9px 10px; text-align: left; vertical-align: top; }
+.ln-table td { white-space: normal; padding: 9px 10px; color: var(--t2); vertical-align: top; line-height: 1.45; }
+.ln-table td.num { white-space: nowrap; color: var(--t1); }
+.ln-table tbody tr:hover { background: none; }
+.ln-table th[scope="row"] .badge { margin-left: 4px; vertical-align: 1px; }
+
+/* "Right now" session line */
+.ln-now {
+  display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--r-sm); font-size: 12.5px; line-height: 1.45;
+  background: color-mix(in oklab, var(--cyan) 7%, transparent); border: 1px solid color-mix(in oklab, var(--cyan) 26%, transparent);
+}
+.ln-now b { color: var(--t1); }
+.ln-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: var(--cyan); animation: pulse 1.8s infinite; }
+
+/* Staged ramp steps */
+.ln-steps { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 8px; }
+.ln-steps li {
+  display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: var(--r-sm);
+  background: var(--glass); border: 1px solid var(--stroke);
+}
+.ln-steps li > span:last-child { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ln-steps li b { font-size: 12.5px; line-height: 1.35; }
+.ln-steps li .dim { font-size: 11.5px; line-height: 1.4; }
+.ln-steps li.on { background: var(--gloss-soft), var(--grad-soft); border-color: color-mix(in oklab, var(--violet) 45%, transparent); box-shadow: inset 0 1px 0 color-mix(in oklab, var(--t1) 10%, transparent); }
+.ln-sn {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--t2); background: var(--glass2); border: 1px solid var(--stroke);
+}
+.ln-steps li.on .ln-sn { color: var(--t1); background: var(--grad); border-color: transparent; }
+
+/* Key takeaway + footer */
+.ln-key {
+  display: flex; align-items: flex-start; gap: 10px; padding: 11px 14px; border-radius: var(--r-sm); font-size: 13px; line-height: 1.5; color: var(--t2);
+  background: var(--gloss-soft), var(--grad-soft); border: 1px solid color-mix(in oklab, var(--violet) 28%, transparent);
+}
+.ln-key b { color: var(--t1); }
+.ln-key svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; color: var(--violet-l); }
+.ln-lesson-f { display: flex; align-items: center; gap: 6px 8px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--stroke); }
+.ln-lesson-f > .ln-lbl { margin: 0 2px 0 0; }
+.ln-readbtn.on { color: var(--violet-l); border-color: color-mix(in oklab, var(--violet) 40%, transparent); }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .ln-lesson { padding: 16px; gap: 12px; }
+  .ln-lesson-h h3 { font-size: 15.5px; }
+  .ln-lesson-f .sp { flex-basis: 100%; height: 0; }
+  .ln-body { font-size: 13px; }
+  .ln-min { margin-left: 0; }
+}
+
+/* ── Reduced motion: keep the deep-link ring visible but static ── */
+@media (prefers-reduced-motion: reduce) {
+  .ln-hl::after { animation: none; opacity: 1; }
+  .ln-dot { animation: none; }
+}
+
+/* ── Print: lessons and terms only ──────────────────────── */
+@media print {
+  .ln-tabs, .ln-bar, .ln-toc, .ln-try, .ln-term-f .btn, .ln-lesson-f { display: none !important; }
+  .ln-crypto { display: block; }
+  .ln-lesson, .ln-term { break-inside: avoid; margin-bottom: 12px; }
+  .ln-body, .ln-plain, .ln-block p, .ln-formula { color: #111 !important; }
+}

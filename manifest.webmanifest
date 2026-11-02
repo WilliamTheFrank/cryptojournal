@@ -1,0 +1,25 @@
+{
+  "id": "/journal/",
+  "name": "CryptoJournal — Crypto Trading Journal",
+  "short_name": "CryptoJournal",
+  "description": "Offline-first crypto trading journal: paper to live, risk guardrails, R-based analytics, daily journal and go-live readiness.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#060A16",
+  "theme_color": "#060A16",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Journal", "url": "./#journal" },
+    { "name": "Trades", "url": "./#trades" },
+    { "name": "Readiness", "url": "./#readiness" },
+    { "name": "Position size", "url": "./#calc" }
+  ]
+}
