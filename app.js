@@ -119,6 +119,8 @@ const App = (() => {
       html += `<div class="banner"><svg><use href="#i-download"/></svg><div class="grow"><b>${age == null ? "You haven't backed up your journal yet." : `Last backup was ${Math.floor(age)} days ago.`}</b> Your data lives only in this browser — keep a copy somewhere safe (a OneDrive folder works well).</div>
         <div class="acts"><button class="btn btn-primary btn-xs" type="button" data-bn="backup">Back up now</button><button class="btn btn-ghost btn-xs" type="button" data-bn="auto">Automatic backups</button><button class="btn btn-quiet btn-xs" type="button" data-bn="snooze">Later</button></div></div>`;
     }
+    // A phone's browser tab, not installed yet: how to put the app on the Home Screen (intro.js)
+    html += call(() => (typeof Intro !== 'undefined' ? Intro.bannerHtml() : '')) || '';
     el.innerHTML = html;
     if (StorageGuard.loadError && typeof Settings !== 'undefined' && Settings.bindRecovery) call(() => Settings.bindRecovery(el));
     el.querySelectorAll('[data-bn]').forEach(b => b.onclick = () => {
@@ -127,6 +129,15 @@ const App = (() => {
       else if (a === 'backup' && typeof Store !== 'undefined') { call(() => Store.exportJSON()); setTimeout(() => { renderBanners(); updateChrome(); }, 400); }
       else if (a === 'auto' && typeof Settings !== 'undefined') Settings.show('data');
       else if (a === 'snooze') { lsSet('cj.bkSnooze', String(Date.now() + 3 * 86400000)); renderBanners(); }
+      else if (a === 'install') call(() => Intro.install());
+      else if (a === 'install-later') {
+        call(() => Intro.snoozeBanner()); renderBanners();
+        // the focused button left with its banner: focus moves on to the next control instead of falling to <body>
+        for (const x of $$('#banners button, .page.active :is(button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"]))')) {
+          if (x.disabled || !x.getClientRects().length) continue;
+          x.focus(); if (document.activeElement === x) break;
+        }
+      }
     });
   }
 
@@ -545,6 +556,8 @@ const App = (() => {
     updateChrome(); renderBanners(); renderTicker();
     refreshPrices();
     priceTimer = setInterval(refreshPrices, 60000);
+    // First start on this device: the welcome intro (intro.js waits until no dialog or drawer is open)
+    call(() => { if (typeof Intro !== 'undefined') Intro.maybeStart(); });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 

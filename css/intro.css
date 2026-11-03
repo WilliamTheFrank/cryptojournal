@@ -1,0 +1,172 @@
+/* ═══════════════════════════════════════════════════════════
+   CryptoJournal — welcome intro, "Show me around" tour, install
+   guide and install banner (.it-). Tokens only.
+   The tour layer (70) sits above modals (50), drawers (45) and the
+   phone tab bar (40), under the palette (80), toasts (90) and info
+   popovers (95). Phones (≤ 860px) get the bottom-sheet modal from
+   styles.css; everything here fits 320px without sideways scroll.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Welcome dialog ─────────────────────────────────────── */
+.it-modal .modal-body { overflow-x: hidden; }
+.it-intro { min-width: 0; }
+.it-slide { display: flex; flex-direction: column; gap: 16px; min-width: 0; animation: it-in var(--dur-3) var(--ease-out); }
+.it-intro[data-dir="-1"] .it-slide { animation-name: it-back; }
+@keyframes it-in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+@keyframes it-back { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: none; } }
+.it-top { display: flex; align-items: center; gap: 14px; }
+.it-badge {
+  flex-shrink: 0; width: 46px; height: 46px; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center;
+  color: var(--violet-l); background: var(--grad-soft); border: 1px solid rgba(59,130,246,.3);
+}
+.it-badge svg { width: 22px; height: 22px; }
+.it-badge.brand { background: var(--grad); border-color: transparent; box-shadow: 0 8px 22px rgba(37,99,235,.4), inset 0 1px 0 rgba(255,255,255,.3); }
+.it-badge.brand svg { width: 26px; height: 26px; }
+.it-lead { font-size: 14.5px; line-height: 1.55; color: var(--t1); min-width: 0; }
+.it-pts { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.it-pts li { display: flex; align-items: flex-start; gap: 12px; font-size: 13.5px; line-height: 1.55; color: var(--t2); min-width: 0; }
+.it-pts li > span:last-child { min-width: 0; }
+.it-pts b { color: var(--t1); }
+.it-pi {
+  flex-shrink: 0; width: 28px; height: 28px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center;
+  color: var(--violet-l); background: rgba(59,130,246,.12); border: 1px solid rgba(59,130,246,.22);
+}
+.it-pi svg { width: 15px; height: 15px; }
+/* a control's name, drawn like the control (+ New trade, Quick log, PAPER…) */
+.it-ui {
+  display: inline-flex; align-items: center; gap: 4px; padding: 0 8px; border-radius: 100px; vertical-align: 1px; line-height: 20px;
+  font-size: 12px; font-weight: 700; color: var(--t1); white-space: nowrap; background: var(--glass2); border: 1px solid var(--stroke2);
+}
+.it-ui svg { width: 11px; height: 11px; }
+/* solid deep blue: white text 6.7:1 (on the button's gradient it drops to 2.5:1 at the light end) */
+.it-ui.pri { background: var(--violet-d); border-color: transparent; color: #fff; }
+.it-next {
+  display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: var(--r-sm);
+  font-size: 13px; line-height: 1.5; color: var(--t2); background: var(--gloss-soft), var(--grad-soft); border: 1px solid rgba(59,130,246,.28);
+}
+.it-next svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; color: var(--violet-l); }
+.it-next b { color: var(--t1); }
+
+/* footer: the dots on their own centred row, so they never move when the buttons change;
+   under them Skip · Back · Next (last slide: Back · Start using the app · Show me around) */
+.it-foot .it-dots { order: -1; flex-basis: 100%; justify-content: center; margin: 0 0 4px; }
+.it-foot [data-it="skip"] { margin-right: auto; }
+.it-dots { display: inline-flex; align-items: center; gap: 6px; }
+.it-dots i { width: 7px; height: 7px; border-radius: 4px; background: var(--t4); transition: width var(--dur-2) var(--ease-out), background var(--dur-2); }
+.it-dots i.on { width: 20px; background: var(--violet-l); }
+.it-foot .btn svg { width: 15px; height: 15px; }
+/* PC: the centred dialog would grow 40px at slide 3 (three points, not two) and Next would slip from
+   under the pointer. Slides 1-4 share the tallest one's height (199px measured); the last slide differs anyway.
+   Phones don't need it: the bottom sheet keeps the footer at the bottom. */
+@media (min-width: 861px) { .it-modal .it-intro { min-height: 204px; } }
+/* narrow sheets: the last slide's buttons share the width */
+@media (max-width: 560px) {
+  .it-foot { gap: 8px; }
+  .it-foot.last .btn { flex: 1 1 auto; }
+}
+
+/* ── Install guide (dialog + the welcome's last slide) ──── */
+.it-guide { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.it-p { font-size: 13px; line-height: 1.55; color: var(--t2); }
+.it-p b { color: var(--t1); }
+.it-sm { font-size: 12.5px; }
+.it-sh { margin: 4px 0 -4px; font-size: 11px; font-weight: 800; letter-spacing: .7px; text-transform: uppercase; color: var(--t3); }
+.it-status {
+  display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border-radius: var(--r-sm); min-width: 0;
+  font-size: 13.5px; line-height: 1.5; color: var(--t2); background: rgba(59,130,246,.07); border: 1px solid rgba(59,130,246,.2);
+}
+.it-status > svg { width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px; color: var(--violet-l); }
+.it-status > div { min-width: 0; }
+.it-status b { color: var(--t1); }
+.it-status.warn { background: var(--amber-bg); border-color: var(--amber-br); }
+.it-status.warn > svg { color: var(--amber); }
+.it-ol { list-style: none; counter-reset: it-step; display: flex; flex-direction: column; gap: 10px; }
+.it-ol li { counter-increment: it-step; position: relative; min-height: 22px; padding-left: 32px; font-size: 13px; line-height: 1.6; color: var(--t2); overflow-wrap: anywhere; }
+.it-ol li::before {
+  content: counter(it-step); position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800;
+  color: var(--violet-l); background: rgba(59,130,246,.14); border: 1px solid rgba(59,130,246,.3);
+}
+.it-ol b { color: var(--t1); }
+/* an icon inside a sentence ("Tap Share ⬆") — a key-cap, so it reads as "this button" */
+.it-gl {
+  display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 20px; margin: 0 1px; vertical-align: -5px;
+  border-radius: 6px; color: var(--violet-l); background: var(--glass2); border: 1px solid var(--stroke2);
+}
+.it-gl svg { width: 13px; height: 13px; }
+.it-appic { display: inline-block; vertical-align: -4px; width: 18px; height: 18px; border-radius: 5px; }
+.it-note { display: flex; align-items: flex-start; gap: 9px; font-size: 12.5px; line-height: 1.5; color: var(--t2); }
+.it-note > svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 2px; color: var(--violet-l); }
+.it-note b { color: var(--t1); }
+.it-acts { display: flex; flex-wrap: wrap; gap: 10px; }
+.it-acts .btn svg { width: 17px; height: 17px; }
+
+/* QR code + address */
+.it-qr { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px; min-width: 0; }
+.it-qr-code { flex-shrink: 0; line-height: 0; padding: 0; border-radius: 10px; overflow: hidden; background: #fff; box-shadow: 0 0 0 1px var(--stroke2), 0 10px 26px rgba(3,7,20,.35); }
+.it-qr-code svg { display: block; max-width: 100%; height: auto; }
+.it-qr-side { flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.it-url {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0;
+  padding: 6px 6px 6px 12px; border-radius: var(--r-sm); background: rgba(0,0,0,.32); border: 1px solid var(--stroke);
+}
+/* basis = the whole address: when it can't share the row with Copy, Copy drops below instead of splitting it.
+   It wraps at the <wbr> seams intro.js puts in (after "/", before "."); break-word only as a last resort */
+.it-addr {
+  flex: 1 1 auto; min-width: 0; font-family: var(--mono); font-size: 12.5px; font-weight: 600; color: var(--t1);
+  overflow-wrap: break-word; -webkit-user-select: all; user-select: all; cursor: text;
+}
+.it-sync {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 12px 14px; border-radius: var(--r-sm);
+  font-size: 13px; line-height: 1.5; color: var(--t2); background: rgba(0,0,0,.18); border: 1px solid var(--stroke);
+}
+.it-sync > svg { width: 18px; height: 18px; flex-shrink: 0; align-self: flex-start; margin-top: 1px; color: var(--violet-l); }
+.it-sync .grow { flex: 1 1 220px; min-width: 0; }
+.it-sync b { color: var(--t1); }
+/* the welcome's last slide: the guide is one part of the slide */
+.it-slide .it-guide { gap: 12px; }
+/* copy fallback: a field nobody sees (16px, or iOS zooms into it) */
+.it-copybox { position: fixed; top: 0; left: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; font-size: 16px; }
+
+/* ── Install banner (app.js #banners) ───────────────────── */
+.it-banner > svg { color: var(--violet-l); }
+
+/* ── "Show me around" tour ──────────────────────────────── */
+.it-tour { position: fixed; inset: 0; z-index: 70; }
+/* takes every click and touch on the dimmed page */
+.it-shade { position: absolute; inset: 0; touch-action: none; }
+/* the spotlight: a ring around the control; its huge shadow dims everything else */
+.it-hole {
+  position: fixed; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; border-radius: 12px;
+  box-shadow: 0 0 0 2px var(--violet-l), 0 0 0 7px rgba(125,211,252,.18), 0 0 0 200vmax rgba(4,7,15,.74);
+  transition: left var(--dur-3) var(--ease-out), top var(--dur-3) var(--ease-out), width var(--dur-3) var(--ease-out), height var(--dur-3) var(--ease-out), border-radius var(--dur-3);
+}
+.it-tip {
+  position: fixed; left: 10px; top: 10px; width: min(340px, calc(100% - 20px));
+  border-radius: var(--r-md); background: linear-gradient(180deg, #101b33, #0a1222); border: 1px solid var(--stroke2);
+  box-shadow: 0 24px 60px rgba(0,0,0,.6), 0 0 60px rgba(37,99,235,.14);
+  transition: left var(--dur-3) var(--ease-out), top var(--dur-3) var(--ease-out);
+  animation: fadeIn var(--dur-2) ease;
+}
+.it-tip-in { position: relative; z-index: 1; padding: 13px 16px 14px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.it-tip-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.it-tip-n { font-size: 11px; font-weight: 800; letter-spacing: .7px; text-transform: uppercase; color: var(--violet-l); }
+.it-tip-skip { margin-left: auto; margin-right: -8px; }
+.it-tip-t { font-family: var(--disp); font-size: 15.5px; font-weight: 700; letter-spacing: -.2px; margin-bottom: 5px; }
+.it-tip-x { font-size: 13px; line-height: 1.55; color: var(--t2); }
+.it-tip-x b { color: var(--t1); }
+.it-tip-f { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+.it-tip-f .btn { min-width: 76px; }
+.it-arrow {
+  position: absolute; width: 12px; height: 12px; margin-left: -6px; transform: rotate(45deg);
+  background: #101b33; border: 1px solid var(--stroke2);
+}
+.it-tip[data-side="below"] .it-arrow { top: -7px; border-right: 0; border-bottom: 0; }
+.it-tip[data-side="above"] .it-arrow { bottom: -7px; border-left: 0; border-top: 0; background: #0a1222; }
+.it-tip[data-side="over"] .it-arrow { display: none; }
+
+/* ── Reduced motion: no slides, glides or fades ─────────── */
+@media (prefers-reduced-motion: reduce) {
+  .it-slide, .it-tip { animation: none; }
+  .it-hole, .it-tip, .it-dots i { transition: none; }
+}

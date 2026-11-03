@@ -25,9 +25,9 @@ const Settings = (() => {
     { id: 'trash', label: 'Trash', icon: 'trash', lead: `Deleted entries stay here for ${TRASH_DAYS} days before they are removed for good.` },
     { id: 'demo', label: 'Demo data', icon: 'sparkle', lead: 'A separate sample account to explore every chart without touching your own journal.' },
     { id: 'danger', label: 'Danger zone', icon: 'alert', lead: 'Irreversible-looking actions. Each one saves a snapshot first.' },
-    { id: 'about', label: 'About', icon: 'info', lead: 'Version, shortcuts, where the ideas come from — and what this app is not.' },
+    { id: 'about', label: 'About', icon: 'info', lead: 'Help and the welcome tour, version, shortcuts, where the ideas come from — and what this app is not.' },
   ];
-  const ALIAS = { tags: 'journal', mistakes: 'journal', taxonomy: 'journal', fees: 'costs', breakeven: 'costs', scratch: 'costs', beBandR: 'costs', backup: 'data', backups: 'data', storage: 'data', snapshots: 'data', theme: 'appearance', rules: 'risk', guardrails: 'risk', ramp: 'risk', wipe: 'danger', cloud: 'sync', devices: 'sync', iphone: 'sync' };
+  const ALIAS = { tags: 'journal', mistakes: 'journal', taxonomy: 'journal', fees: 'costs', breakeven: 'costs', scratch: 'costs', beBandR: 'costs', backup: 'data', backups: 'data', storage: 'data', snapshots: 'data', theme: 'appearance', rules: 'risk', guardrails: 'risk', ramp: 'risk', wipe: 'danger', cloud: 'sync', devices: 'sync', iphone: 'sync', help: 'about', tour: 'about', install: 'about', intro: 'about' };
 
   const lsGet = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* private mode */ } };
@@ -1431,6 +1431,8 @@ const Settings = (() => {
   function aboutHtml() {
     const attr = typeof Market !== 'undefined' && Market.attribution ? Market.attribution : 'Prices: CoinGecko · DexScreener';
     return `<div class="st-grid">
+      ${card('Help', 'sparkle', `<p class="st-p">Replay the welcome, let the app point out its main buttons, or see how to put CryptoJournal on your iPhone and PC.</p>
+        <div class="row st-acts">${btn('intro', 'Welcome tour', { icon: 'play' })}${btn('tour', 'Show me around', { icon: 'target' })}${btn('install', 'Install the app', { icon: 'download' })}</div>`, { cls: 'st-wide' })}
       ${card('CryptoJournal v2', 'info', `<div class="st-ver"><b>CryptoJournal v2</b><span class="badge cat sm">Data format v${DB_VERSION}</span><span class="badge cat sm">Works offline</span></div>
         <p class="st-p">A trading journal for building evidence on paper before risking real money: net-R analytics, honest sample sizes, risk guardrails and a staged path to live trading. Everything stays on this device unless you turn on cloud sync (Sync &amp; devices).</p>
         <div class="row st-acts">${btn('keys', 'Keyboard shortcuts', { icon: 'cmd' })}${btn('learn', 'Metric guide', { icon: 'book' })}</div>`)}
@@ -1448,7 +1450,12 @@ const Settings = (() => {
     </div>`;
   }
   function bindAbout(panel) {
+    // intro.js may be missing — or in the TDZ when its script threw, where even typeof throws
+    const intro = (fn) => () => { let I = null; try { I = typeof Intro !== 'undefined' ? Intro : null; } catch (e) { I = null; } if (I && I[fn]) I[fn](); else toast('Help is unavailable right now', 'warn'); };
     onBtn(panel, {
+      intro: intro('open'),
+      tour: intro('tour'),
+      install: intro('install'),
       keys: () => { if (typeof Palette !== 'undefined' && Palette.shortcuts) Palette.shortcuts(); else toast('Shortcuts are unavailable right now', 'warn'); },
       learn: () => { if (typeof Learn !== 'undefined' && Learn.show) Learn.show('metrics'); else go('patterns'); },
     });

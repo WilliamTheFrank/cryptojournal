@@ -1,17 +1,17 @@
 // CryptoJournal service worker — offline app shell caching (scope: /journal/)
-const CACHE = 'cryptojournal-v9';
+const CACHE = 'cryptojournal-v10';
 const ASSETS = [
   './',
   './index.html',
   './styles.css',
   './css/dashboard.css', './css/tradeform.css', './css/ledger.css', './css/analytics.css',
   './css/readiness.css', './css/journal.css', './css/discipline.css', './css/calc.css',
-  './css/learn.css', './css/settings.css', './css/importer.css', './css/palette.css', './css/sync.css',
+  './css/learn.css', './css/settings.css', './css/importer.css', './css/palette.css', './css/sync.css', './css/intro.css',
   './engine.js', './metrics.js', './charts.js', './patterns.js', './core.js', './market.js',
   './store.js', './config.js', './sync.js', './sync-ui.js', './tradeform.js',
   './pages/ledger.js', './pages/analytics.js', './pages/readiness.js', './pages/journal.js',
   './pages/discipline.js', './pages/calc.js', './pages/learn.js', './pages/settings.js',
-  './importer.js', './palette.js', './demo.js', './app.js',
+  './importer.js', './palette.js', './demo.js', './qr.js', './intro.js', './app.js',
   './manifest.webmanifest',
   './icon.svg', './icon-maskable.svg',
   './icon-180.png', './icon-192.png', './icon-512.png', './icon-maskable-512.png'

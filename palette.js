@@ -28,6 +28,7 @@ const Palette = (() => {
     App: () => (typeof App !== 'undefined' ? App : null),
     Sync: () => (typeof Sync !== 'undefined' ? Sync : null),
     SyncUI: () => (typeof SyncUI !== 'undefined' ? SyncUI : null),
+    Intro: () => (typeof Intro !== 'undefined' ? Intro : null),
   };
   // fn('TradeForm', 'open') → bound function or null; call() resolves at run time and toasts when missing
   const fn = (mod, name) => { const m = ok(M[mod], null); return m && typeof m[name] === 'function' ? m[name].bind(m) : null; };
@@ -273,6 +274,10 @@ const Palette = (() => {
     if (fn('Settings', 'show') && ok(() => M.Settings().sections.includes('sync'), false)) add({ id: 'set:sync', group: 'Settings', label: 'Sync & devices settings', icon: 'gear', kw: 'settings sync cloud devices iphone phone pc account sign in sign out email password delete', searchOnly: true, run: () => call('Settings', 'show', 'sync') });
 
     // Help
+    // Welcome intro, spotlight tour and install guide (intro.js)
+    if (fn('Intro', 'open')) add({ id: 'help:intro', group: 'Help', label: 'Welcome tour', icon: 'play', kw: 'intro welcome tutorial guide how to start getting started walkthrough help', sub: 'What the app does and how to use it, in five short steps', run: () => call('Intro', 'open', 0) });
+    if (fn('Intro', 'tour')) add({ id: 'help:tour', group: 'Help', label: 'Show me around', icon: 'target', kw: 'tour tooltips spotlight where is buttons guide how to tutorial help', sub: 'Points out the main buttons, one at a time', run: () => call('Intro', 'tour') });
+    if (fn('Intro', 'install')) add({ id: 'help:install', group: 'Help', label: 'Install the app', icon: 'download', kw: 'install add to home screen iphone ipad android phone pc desktop app qr code how to guide', sub: 'Put CryptoJournal on your iPhone or PC', run: () => call('Intro', 'install') });
     add({ id: 'help:keys', group: 'Help', label: 'Keyboard shortcuts', icon: 'cmd', keys: '?', kw: 'hotkeys keys help keyboard', run: shortcuts });
     if (fn('Learn', 'show')) {
       add({ id: 'help:metrics', group: 'Help', label: 'Metrics guide', icon: 'info', kw: 'glossary definitions formulas learn', sub: 'What every number means', run: () => call('Learn', 'show', 'metrics') });
